@@ -1,12 +1,12 @@
 import {createElement} from '../render.js';
 
-function createTaskListTemplate() {
-  return '<div class="trip-events"></div>';
+function createButtonHeardTemplate() {
+  return '<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow">New event<button>';
 }
 
-export default class TaskListView {
+export default class ButtonHeardView {
   getTemplate() {
-    return createTaskListTemplate();
+    return createButtonHeardTemplate();
   }
 
   getElement() {

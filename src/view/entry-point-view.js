@@ -1,12 +1,11 @@
 import {createElement} from '../render.js';
 
-function createCardTemplate() {
+function createEntryPointTemplate() {
   return (
-    `<ul class="trip-events__list">
-      <li class="trip-events__item">
-        <div class="event">
-          <time class="event__date" datetime="2019-03-18">MAR 18</time>
-          <div class="event__type">
+    `<li class="trip-events__item">
+      <div class="event">
+        <time class="event__date" datetime="2019-03-18">MAR 18</time>
+        <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
         </div>
         <h3 class="event__title">Taxi Amsterdam</h3>
@@ -25,7 +24,7 @@ function createCardTemplate() {
         <ul class="event__selected-offers">
           <li class="event__offer">
             <span class="event__offer-title">Order Uber</span>
-            &plus;&euro;&nbsp;
+              &plus;&euro;&nbsp;
             <span class="event__offer-price">20</span>
           </li>
         </ul>
@@ -39,14 +38,13 @@ function createCardTemplate() {
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
-    </li>
-  </ul>`
+    </li>`
   );
 }
 
-export default class CardView {
+export default class EntryPointView {
   getTemplate() {
-    return createCardTemplate();
+    return createEntryPointTemplate();
   }
 
   getElement() {

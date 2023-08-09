@@ -1,12 +1,12 @@
 import {createElement} from '../render.js';
 
-function createNewTaskButtonTemplate() {
-  return '<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow">New event<button>';
+function createTripListTemplate() {
+  return '<ul class="trip-events__list"></ul>';
 }
 
-export default class NewTaskButtonView {
+export default class TripListView {
   getTemplate() {
-    return createNewTaskButtonTemplate();
+    return createTripListTemplate();
   }
 
   getElement() {

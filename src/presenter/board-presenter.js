@@ -1,11 +1,11 @@
 import {render} from '../render.js';
 import SortView from '../view/sort-view.js';
-import TaskListView from '../view/task-list-view.js';
-import TaskEditView from '../view/task-edit-view.js';
-import CardView from '../view/card-view.js';
+import EditView from '../view/edit-view.js';
+import EntryPointView from '../view/entry-point-view.js';
+import TripListView from '../view/trip-list-view.js';
 
 export default class BoardPresenter {
-  taskListComponent = new TaskListView();
+  tripListComponent = new TripListView();
 
   constructor({boardContainer}) {
     this.boardContainer = boardContainer;
@@ -13,11 +13,11 @@ export default class BoardPresenter {
 
   init() {
     render(new SortView(), this.boardContainer);
-    render(this.taskListComponent, this.boardContainer);
-    render(new TaskEditView(), this.taskListComponent.getElement());
+    render(this.tripListComponent, this.boardContainer);
+    render(new EditView(), this.tripListComponent.getElement());
 
     for (let i = 0; i < 3; i++) {
-      render(new CardView(), this.taskListComponent.getElement());
+      render(new EntryPointView(), this.tripListComponent.getElement());
     }
   }
 }

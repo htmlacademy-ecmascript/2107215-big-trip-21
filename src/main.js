@@ -1,17 +1,17 @@
 import {render} from './render.js';
-import NewTaskButtonView from './view/new-task-button-view';
+import ButtonHeardView from './view/button-heard-view';
 import BoardPresenter from './presenter/board-presenter.js';
 import InfoView from './view/info-view.js';
 import FilterView from './view/filter-view.js';
 
-const siteHeaderElement = document.querySelector('.page-header');
-const siteTripElement = siteHeaderElement.querySelector('.trip-main');
-const siteTripFilterElement = document.querySelector('.trip-controls__filters');
-const siteTripEventsElement = document.querySelector('.trip-events');
-const boardPresenter = new BoardPresenter({boardContainer: siteTripEventsElement});
+const headerNode = document.querySelector('.page-header');
+const tripMainNode = headerNode.querySelector('.trip-main');
+const tripFilterNode = document.querySelector('.trip-controls__filters');
+const tripEventNode = document.querySelector('.trip-events');
+const boardPresenter = new BoardPresenter({boardContainer: tripEventNode});
 
-render(new FilterView(), siteTripFilterElement);
-render(new InfoView(), siteTripElement, 'afterbegin');
-render(new NewTaskButtonView(), siteTripElement);
+render(new FilterView(), tripFilterNode);
+render(new InfoView(), tripMainNode, 'afterbegin');
+render(new ButtonHeardView(), tripMainNode);
 
 boardPresenter.init();

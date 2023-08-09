@@ -2,7 +2,7 @@ import {createElement} from '../render.js';
 
 function createTaskEditTemplate() {
   return (
-    `<div class="trip-events__item">
+    `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
@@ -136,11 +136,11 @@ function createTaskEditTemplate() {
           </section>
         </section>
       </form>
-    </div>`
+    </li>`
   );
 }
 
-export default class TaskEditView {
+export default class EditView {
   getTemplate() {
     return createTaskEditTemplate();
   }
