@@ -1,7 +1,7 @@
 import {createElement} from '../render.js';
 
 function createBoardTemplate() {
-  return `<section class="trip-events"></section>`;
+  return '<section class="trip-events"></section>';
 }
 
 export default class BoardView {

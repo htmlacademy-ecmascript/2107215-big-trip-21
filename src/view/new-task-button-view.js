@@ -1,7 +1,7 @@
 import {createElement} from '../render.js';
 
 function createNewTaskButtonTemplate() {
-  return `<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow">New event<button>`;
+  return '<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow">New event<button>';
 }
 
 export default class NewTaskButtonView {
@@ -14,7 +14,7 @@ export default class NewTaskButtonView {
       this.element = createElement(this.getTemplate());
     }
 
-    return this.element
+    return this.element;
   }
 
   removeElement() {
