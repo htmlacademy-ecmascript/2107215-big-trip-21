@@ -1,5 +1,5 @@
 import {createElement} from '../render.js';
-import {DATE_FORMAT_LIST, DATE_FORMAT_MONTH, DIFFERENCED_H, DIFFERENCED_M} from '../const.js';
+import {DATE_FORMAT} from '../const.js';
 import {humanizeTaskDueDate, humanizeTaskDueDate2} from '../utils.js';
 
 // const deadlineClassName = isTaskExpired(dueDate)
@@ -10,15 +10,13 @@ function createPointTemplate(task) {
   const {type, price, dataTime} = task
 
   const difference = (dataTime.end - dataTime.start);
-  const differenceTimeH = humanizeTaskDueDate2(difference, DIFFERENCED_H);
-  const differenceTimeM = humanizeTaskDueDate2(difference, DIFFERENCED_M);
-  // const differenceTimeH = differenceTaskDueDate(dataTime.end, dataTime.start, DIFFERENCED_H);
-
-  const dateStart = humanizeTaskDueDate(dataTime.start, DATE_FORMAT_LIST);
-  const dateEnd = humanizeTaskDueDate(dataTime.end, DATE_FORMAT_LIST);
+  const differenceTimeH = humanizeTaskDueDate2(difference, DATE_FORMAT.hour);
+  const differenceTimeM = humanizeTaskDueDate2(difference, DATE_FORMAT.minute);
+  const dateStart = humanizeTaskDueDate(dataTime.start, DATE_FORMAT.hourMinute);
+  const dateEnd = humanizeTaskDueDate(dataTime.end, DATE_FORMAT.hourMinute);
   // const differenceTimeH = humanizeTaskDueDate(dateEnd - dateStart);
   console.log(differenceTimeH)
-  const dateMonth = humanizeTaskDueDate(dataTime.end, DATE_FORMAT_MONTH);
+  const dateMonth = humanizeTaskDueDate(dataTime.end, DATE_FORMAT.monthDay);
 
   const havedifferenceTimeH = differenceTimeH > 0
     ? `${differenceTimeH}H `

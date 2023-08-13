@@ -20,12 +20,14 @@ export default class BoardPresenter {
     render(this.tripListComponent, this.boardContainer);
     render(new PointEditView({task: this.boardPoint[1]}), this.tripListComponent.getElement());
 
-    if (this.boardPoint.length)  {
-      for (let i = 0; i < this.boardPoint.length; i++) {
-        render(new PointView({task: this.boardPoint[i]}), this.tripListComponent.getElement());
-      }
-    } else {
-      render(new PointListAbsence(), this.boardContainer);
-    }
+    console.log(this.boardPoint)
+
+    // if (this.boardPoint.length)  {
+    //   for (let i = 0; i < this.boardPoint.length; i++) {
+    //     render(new PointView({task: this.boardPoint[i]}), this.tripListComponent.getElement());
+    //   }
+    // } else {
+    //   render(new PointListAbsence(), this.boardContainer);
+    // }
   }
 };

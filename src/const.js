@@ -1,11 +1,22 @@
 const ROUTE_COUNT = 3;
-const DATE_FORMAT = 'DD/MM/YY HH:mm';
-const DATE_FORMAT_LIST = 'HH:mm';
-const DATE_FORMAT_MONTH = 'MMM DD';
-const DIFFERENCED_H = 'HH';
-const DIFFERENCED_M = 'mm';
 
-const TYPEROUTE = [
+const CITES = [
+  'Rubcovsk',
+  'Novosibirsk',
+  'Barnaul',
+  'Moscow',
+  'London',
+  'Rome',
+  'Saint-Petersburg'
+];
+
+const DESCRIPTIONS = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.',
+  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis.',
+  'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.'
+];
+
+const TYPEPOINT = [
   'Taxi',
   'Bus',
   'Train',
@@ -16,6 +27,17 @@ const TYPEROUTE = [
   'Sightseeing',
   'Restaurant',
 ];
+
+const DATE_FORMAT = {
+  fullData: 'DD/MM/YY HH:mm',
+  hourMinute: 'HH:mm',
+  monthDay: 'MMM DD',
+  hour: 'HH',
+  minute: 'mm',
+  day: 'DD',
+}
+
+const DEFAULT_TYPE = 'flight';
 
 const BLANK_POINT = {
   type: null,
@@ -63,4 +85,4 @@ const BLANK_POINT = {
   }
 };
 
-export {TYPEROUTE, ROUTE_COUNT, BLANK_POINT, DATE_FORMAT, DATE_FORMAT_LIST, DATE_FORMAT_MONTH, DIFFERENCED_H, DIFFERENCED_M};
+export {TYPEPOINT, ROUTE_COUNT, BLANK_POINT, DATE_FORMAT, DEFAULT_TYPE, CITES, DESCRIPTIONS};

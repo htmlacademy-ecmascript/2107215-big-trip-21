@@ -1,23 +1,30 @@
 import {createElement} from '../render.js';
 import {humanizeTaskDueDate} from '../utils.js';
-import {DATE_FORMAT} from '../const.js';
+import {DATE_FORMAT, TYPEPOINT} from '../const.js';
 
-function createOfferSelectorTemplate(offers) {
+function createOfferSelectorTemplate(task) {
+// console.log(task)
   return (
-    `${(offers) ?
-    `<div class="event__available-offers">
-      ${Object.values(offers).map((offer) =>
-        `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}">
-            <label class="event__offer-label" for="event-offer-${offer.id}-1">
-            <span class="event__offer-title">${offer.title}</span>
-              &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.offerPrice}</span>
-          </label></div>`).join('')}
-        </div>`
-     : ''}`
-  );
-}
+    `${(task) ?
+      `<div class="event__available-offers">
+        ${Object.values(task).map((currentOffer) =>
+          `<div class="event__offer-selector">
+<input class="event__offer-checkbox  visually-hidden" id="event-offer-${currentOffer.id}" type="checkbox" name="event-offer-${currentOffer.id}">
+  <label class="event__offer-label" for="event-offer-${currentOffer.id}-1">
+  <span class="event__offer-title">${currentOffer.title}</span>
+  ${console.log(currentOffer.title)}
+    &plus;&euro;&nbsp;
+  <span class="event__offer-price">${currentOffer.price}</span>
+</label>
+</div>`).join('')}
+          </div>`
+       : ''}`
+    );
+};
+
+
+
+
 
 function setElementPhotos(destination) {
   const {photo} = destination;
@@ -25,7 +32,7 @@ function setElementPhotos(destination) {
     `${(photo) ?
     `<div class="event__photos-container">
       <div class="event__photos-tape">
-      ${Object.entries(photo).map(([key, value]) =>
+      ${Object.values(photo).map((value) =>
         `<img class="event__photo" src="${value}" alt="Event photo">`
       ).join('')}
       </div>
@@ -34,18 +41,17 @@ function setElementPhotos(destination) {
   )
 };
 
-function getValueOffers(offers) {
-  const {title} = offers;
-  return Object.values(title).some(Boolean);
-}
-
 function createPointEditTemplate(task) {
-  const {destination, offers, dataTime} = task;
-  const filterOffers = Object.values(offers).filter((offer) => offer.event === true)
-  const offerSelectorTemplate = createOfferSelectorTemplate(filterOffers);
+  const {destination, offers, type, dataTime} = task;
+  // const offersByType = TYPEPOINT.find((item) => item.type === type);
+  // console.log(offersByType)
+  // const filterOffers = Object.values(offers).filter((offer) => offer.event === true)
+  const offerSelectorTemplate = createOfferSelectorTemplate(task);
   const offerPhotoTemplate = setElementPhotos(destination);
-  const dateStart = humanizeTaskDueDate(dataTime.start, DATE_FORMAT);
-  const dateEnd = humanizeTaskDueDate(dataTime.end, DATE_FORMAT);
+  const dateStart = humanizeTaskDueDate(dataTime.start, DATE_FORMAT.fullData);
+  const dateEnd = humanizeTaskDueDate(dataTime.end, DATE_FORMAT.fullData);
+  const pointTypeOffer = Object.values(task).find((item) => item.type === TYPEPOINT.type)
+  // console.log(pointTypeOffer)
 
   return (
     `<li class="trip-events__item">
