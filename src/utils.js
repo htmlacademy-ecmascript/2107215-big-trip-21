@@ -62,4 +62,7 @@ const dateDiff = (date1, date2) => {
   }
 };
 
-export {getRandomArrayElement, getRandomInt, getDate, humanizeDate, dateDiff};
+const CreateToUpperCase = (word) =>
+  word.charAt(0).toUpperCase() + word.slice(1);
+
+export {getRandomArrayElement, getRandomInt, getDate, humanizeDate, dateDiff, CreateToUpperCase};

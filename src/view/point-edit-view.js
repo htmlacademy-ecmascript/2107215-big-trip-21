@@ -1,5 +1,5 @@
 import {createElement} from '../render.js';
-import {humanizeDate} from '../utils.js';
+import {humanizeDate, CreateToUpperCase} from '../utils.js';
 import {DATE_FORMAT, POINT_EMPTY} from '../const.js';
 
 const createOfferSelectorTemplate = (offers) =>
@@ -40,7 +40,7 @@ const createTypesListTemplate = (offerTypes, type) => {
           value="${item.type}"
           ${(item.type === type) ? 'checked' : ''}
         >
-        <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-1">${item.type.charAt(0).toUpperCase() + item.type.slice(1)}</label>
+        <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-1">${CreateToUpperCase(item.type)}</label>
       </div>`)).join('');
 
   return (
