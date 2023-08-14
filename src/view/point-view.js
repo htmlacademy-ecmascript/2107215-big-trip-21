@@ -20,7 +20,7 @@ const createPointTemplate = ({point = POINT_EMPTY, pointDestination, pointOffer}
   const dateStart = humanizeDate(dataTime.start, DATE_FORMAT.hourMinute);
   const isDiffTime = dateDiff(dataTime.start, dataTime.end);
   const dateEnd = humanizeDate(dataTime.end, DATE_FORMAT.hourMinute);
-  const dateMonth = humanizeDate(dataTime.end, DATE_FORMAT.monthDay);
+  const dateMonth = humanizeDate(dataTime.start, DATE_FORMAT.monthDay);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
