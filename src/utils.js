@@ -1,10 +1,11 @@
 import dayjs from 'dayjs';
-const utc = require('dayjs/plugin/utc')
-dayjs.extend(utc)
+import utc from 'dayjs/plugin/utc';
+import {Duration, DATE_FORMAT} from './const.js';
 
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
+dayjs.extend(utc);
+
+const getRandomArrayElement = (items) =>
+  items[Math.floor(Math.random() * items.length)];
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -16,20 +17,49 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function humanizeTaskDueDate(dueDate, dataFormat) {
-  return dueDate ? dayjs(dueDate).format(dataFormat) : '';
-}
+const getDate = ({next}) => {
+  let date = dayjs().subtract(getRandomInt(0, Duration.DAY), 'day').toDate();
+  const minsGap = getRandomInt(0, Duration.MIN);
+  const hoursGap = getRandomInt(0, Duration.HOUR);
+  const daysGap = getRandomInt(0, Duration.DAY);
 
-function humanizeTaskDueDate2(dueDate, dataFormat) {
-  return dueDate ? dayjs(dueDate).utcOffset(0).format(dataFormat) : '';
-}
+  if (next) {
+    date = dayjs()
+      .add(minsGap, 'minute')
+      .add(hoursGap, 'hour')
+      .subtract(daysGap, 'day').toDate();
+  }
 
-// function differenceTaskDueDate(date1, date2) {
-//   return date1 ? dayjs(date1).diff(date2, 'day') : '';
-// }
+  return date;
+};
 
-// function isTaskExpired(dueDate) {
-//   return dueDate && dayjs().isAfter(dueDate, 'D');
-// }
+const humanizeDate = (date, dataFormat) =>
+  date ? dayjs(date).format(dataFormat) : '';
 
-export {getRandomArrayElement, getRandomInt, humanizeTaskDueDate, humanizeTaskDueDate2};
+const humanizeDateUtc = (date, dataFormat) =>
+  date ? dayjs(date).utcOffset(0).format(dataFormat) : '';
+
+const dateDiff = (date1, date2) => {
+  let answer = '';
+  const diffTime = (date2 - date1);
+  const diffTimeHours = humanizeDateUtc(diffTime, DATE_FORMAT.hour);
+  const diffTimeMinutes = humanizeDateUtc(diffTime, DATE_FORMAT.minute);
+  const diffTimeDays = humanizeDateUtc(diffTime, DATE_FORMAT.day);
+
+  if (diffTime <= 0) {
+    return 'wrong date';
+  } else {
+    if (diffTimeDays !== 0) {
+      answer = `${diffTimeDays}d `;
+    }
+    if (diffTimeHours !== 0) {
+      answer += `${diffTimeHours}h ` ;
+    }
+    if (diffTimeMinutes !== 0) {
+      answer += `${diffTimeMinutes}m` ;
+    }
+    return answer;
+  }
+};
+
+export {getRandomArrayElement, getRandomInt, getDate, humanizeDate, dateDiff};

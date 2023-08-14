@@ -35,54 +35,24 @@ const DATE_FORMAT = {
   hour: 'HH',
   minute: 'mm',
   day: 'DD',
-}
+};
 
 const DEFAULT_TYPE = 'flight';
 
-const BLANK_POINT = {
-  type: null,
-  price: null,
-  destination: {
-    city: '',
-    photo: null,
-    description: ''
-  },
-  offers: {
-    luggage: {
-      title: '',
-      id: '',
-      offerPrice: null,
-      event: false
-    },
-    comfort: {
-      title: '',
-      id: '',
-      offerPrice: null,
-      event: false
-    },
-    meal: {
-      title: '',
-      id: '',
-      offerPrice: null,
-      event: false
-    },
-    seats: {
-      title: '',
-      id: '',
-      offerPrice: null,
-      event: false
-    },
-    train: {
-      title: '',
-      id: '',
-      offerPrice: null,
-      event: false
-    },
-  },
-  event: {
-    start: null,
-    end: null
-  }
+const POINT_EMPTY = {
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: null,
+  isFavorite: false,
+  offers: [],
+  type: DEFAULT_TYPE,
 };
 
-export {TYPEPOINT, ROUTE_COUNT, BLANK_POINT, DATE_FORMAT, DEFAULT_TYPE, CITES, DESCRIPTIONS};
+const Duration = {
+  MIN: 59,
+  DAY: 7,
+  HOUR: 23
+};
+
+export {TYPEPOINT, ROUTE_COUNT, DATE_FORMAT, DEFAULT_TYPE, CITES, DESCRIPTIONS, POINT_EMPTY, Duration};

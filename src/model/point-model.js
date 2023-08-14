@@ -1,10 +1,11 @@
-import {getRandomComponent} from '../mock/point-mock.js';
-import {ROUTE_COUNT} from '../const.js';
+export default class PointsModel {
 
-export default class PointModel {
-  point = Array.from({length: ROUTE_COUNT}, getRandomComponent);
+  constructor(service) {
+    this.service = service;
+    this.points = this.service.getPoints();
+  }
 
-  getTasks() {
-    return this.point;
+  get() {
+    return this.points;
   }
 }
