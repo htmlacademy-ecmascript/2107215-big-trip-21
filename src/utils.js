@@ -42,9 +42,9 @@ const humanizeDateUtc = (date, dataFormat) =>
 const dateDiff = (date1, date2) => {
   let answer = '';
   const diffTime = (date2 - date1);
-  const diffTimeHours = humanizeDateUtc(diffTime, DATE_FORMAT.hour);
-  const diffTimeMinutes = humanizeDateUtc(diffTime, DATE_FORMAT.minute);
-  const diffTimeDays = humanizeDateUtc(diffTime, DATE_FORMAT.day);
+  const diffTimeHours = humanizeDateUtc(diffTime, DATE_FORMAT.HOUR);
+  const diffTimeMinutes = humanizeDateUtc(diffTime, DATE_FORMAT.MINUTE);
+  const diffTimeDays = humanizeDateUtc(diffTime, DATE_FORMAT.DAY);
 
   if (diffTime <= 0) {
     return 'wrong date';
