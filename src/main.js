@@ -1,4 +1,4 @@
-import {render} from './render.js';
+import { render } from './render.js';
 import ButtonHeardView from './view/button-heard-view';
 import BoardPresenter from './presenter/board-presenter.js';
 import InfoView from './view/info-view.js';

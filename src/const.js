@@ -1,5 +1,3 @@
-const ROUTE_COUNT = 3;
-
 const CITES = [
   'Rubcovsk',
   'Novosibirsk',
@@ -8,6 +6,12 @@ const CITES = [
   'London',
   'Rome',
   'Saint-Petersburg'
+];
+
+const DESCRIPTION_PICTURES = [
+  'Lorem ipsum dolor sit amet.',
+  'Phasellus eros mauris.',
+  'In rutrum ac purus sit amet tempus.'
 ];
 
 const DESCRIPTIONS = [
@@ -55,4 +59,4 @@ const Duration = {
   HOUR: 23
 };
 
-export {TYPEPOINTS, ROUTE_COUNT, DATE_FORMAT, DEFAULT_TYPE, CITES, DESCRIPTIONS, POINT_EMPTY, Duration};
+export {TYPEPOINTS, DATE_FORMAT, DEFAULT_TYPE, CITES, DESCRIPTIONS, POINT_EMPTY, DESCRIPTION_PICTURES, Duration};

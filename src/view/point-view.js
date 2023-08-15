@@ -15,12 +15,12 @@ const createViewOffersList = (offers) =>
   </ul>`;
 
 const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer }) => {
-  const { dataTime, type, basePrice, isFavorite } = point;
+  const { dateFrom, dateTo, type, basePrice, isFavorite } = point;
 
-  const dateStart = humanizeDate(dataTime.start, DATE_FORMAT.HOUR_MINUTE);
-  const isDiffTime = dateDiff(dataTime.start, dataTime.end);
-  const dateEnd = humanizeDate(dataTime.end, DATE_FORMAT.HOUR_MINUTE);
-  const dateMonth = humanizeDate(dataTime.start, DATE_FORMAT.MONTH_DAY);
+  const dateStart = humanizeDate(dateFrom, DATE_FORMAT.HOUR_MINUTE);
+  const isDiffTime = dateDiff(dateFrom, dateTo);
+  const dateEnd = humanizeDate(dateTo, DATE_FORMAT.HOUR_MINUTE);
+  const dateMonth = humanizeDate(dateFrom, DATE_FORMAT.MONTH_DAY);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
@@ -29,16 +29,16 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
   return (
     `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="${dataTime.start}">${dateMonth}</time>
+        <time class="event__date" datetime="${dateFrom}">${dateMonth}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${type} ${pointDestination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${dataTime.start}">${dateStart}</time>
+            <time class="event__start-time" datetime="${dateFrom}">${dateStart}</time>
               &mdash;
-            <time class="event__end-time" datetime="${dataTime.end}">${dateEnd}</time>
+            <time class="event__end-time" datetime="${dateTo}">${dateEnd}</time>
           </p>
           <p class="event__duration">${isDiffTime}</p>
         </div>

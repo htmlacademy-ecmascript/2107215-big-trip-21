@@ -19,11 +19,11 @@ const createOfferSelectorTemplate = (offers) =>
     );
   }).join('');
 
-const setElementPhotos = (photo) =>
-  `${(photo.length) ?
+const setElementPictures = (pictures) =>
+  `${(pictures) ?
     `<div class="event__photos-tape">
-    ${Object.values(photo).map((value) =>
-    `<img class="event__photo" src="${value}" alt="Event photo">`
+    ${(pictures).map((picture) =>
+    `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
   ).join('')}
       </div>`
     : ''}`;
@@ -58,8 +58,8 @@ const createTypesListTemplate = (offerTypes, type) => {
      </div>`);
 };
 
-const createPointEditTemplate = ({point = POINT_EMPTY, pointDestination, pointOffer}) => {
-  const {dataTime, type, basePrice} = point;
+const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer }) => {
+  const { dateFrom, dateTo, type, basePrice } = point;
   const offersByType = pointOffer.find((item) => item.type === type).offers;
   const currentDestination = pointDestination.find((destination) => destination.id === point.destination);
 
@@ -83,10 +83,10 @@ const createPointEditTemplate = ({point = POINT_EMPTY, pointDestination, pointOf
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dataTime.start, DATE_FORMAT.FULL_DATA)}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dateFrom, DATE_FORMAT.FULL_DATA)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dataTime.end, DATE_FORMAT.FULL_DATA)}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dateTo, DATE_FORMAT.FULL_DATA)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -111,7 +111,7 @@ const createPointEditTemplate = ({point = POINT_EMPTY, pointDestination, pointOf
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${currentDestination.description}</p>
           <div class="event__photos-container">
-            ${setElementPhotos(currentDestination.photo)}
+            ${setElementPictures(currentDestination.pictures)}
           </div>
         </section>
       </section>

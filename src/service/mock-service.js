@@ -1,16 +1,10 @@
 import { generateMockPoints } from '../mock/points.js';
 import { generateMockDestinations } from '../mock/destinations.js';
 import { generateMockOffers } from '../mock/offers.js';
-
 import { TYPEPOINTS } from '../const.js';
-
-import { getRandomInt, getRandomArrayElement} from '../utils.js';
+import { getRandomInt, getRandomArrayElement } from '../utils.js';
 
 export default class MockService {
-  destinations = [];
-  offers = [];
-  points = [];
-
   constructor() {
     this.destinations = this.generateDestination();
     this.offers = this.generateOffers();
@@ -49,7 +43,6 @@ export default class MockService {
       const destination = getRandomArrayElement(this.destinations);
 
       const hasOffers = getRandomInt(0, 1);
-
       const offersByType = this.offers
         .find((offerByType) => offerByType.type === type);
 
