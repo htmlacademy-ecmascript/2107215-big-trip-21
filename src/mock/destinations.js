@@ -1,5 +1,5 @@
-import {getRandomArrayElement, getRandomInt} from '../utils.js';
-import {CITES, DESCRIPTIONS} from '../const.js';
+import { getRandomArrayElement, getRandomInt } from '../utils.js';
+import { CITES, DESCRIPTIONS } from '../const.js';
 
 const generateMockDestinations = () => {
   const city = getRandomArrayElement(CITES);

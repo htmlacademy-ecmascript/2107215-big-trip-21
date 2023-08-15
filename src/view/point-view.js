@@ -1,6 +1,6 @@
-import {createElement} from '../render.js';
-import {DATE_FORMAT, POINT_EMPTY} from '../const.js';
-import {humanizeDate, dateDiff} from '../utils.js';
+import { createElement } from '../render.js';
+import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
+import { humanizeDate, dateDiff } from '../utils.js';
 
 const createViewOffersList = (offers) =>
   `<ul class="event__selected-offers">
@@ -14,13 +14,13 @@ const createViewOffersList = (offers) =>
     : ''}
   </ul>`;
 
-const createPointTemplate = ({point = POINT_EMPTY, pointDestination, pointOffer}) => {
-  const {dataTime, type, basePrice, isFavorite} = point;
+const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer }) => {
+  const { dataTime, type, basePrice, isFavorite } = point;
 
-  const dateStart = humanizeDate(dataTime.start, DATE_FORMAT.hourMinute);
+  const dateStart = humanizeDate(dataTime.start, DATE_FORMAT.HOUR_MINUTE);
   const isDiffTime = dateDiff(dataTime.start, dataTime.end);
-  const dateEnd = humanizeDate(dataTime.end, DATE_FORMAT.hourMinute);
-  const dateMonth = humanizeDate(dataTime.start, DATE_FORMAT.monthDay);
+  const dateEnd = humanizeDate(dataTime.end, DATE_FORMAT.HOUR_MINUTE);
+  const dateMonth = humanizeDate(dataTime.start, DATE_FORMAT.MONTH_DAY);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'

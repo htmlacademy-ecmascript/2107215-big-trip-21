@@ -2,7 +2,7 @@ import { generateMockPoints } from '../mock/points.js';
 import { generateMockDestinations } from '../mock/destinations.js';
 import { generateMockOffers } from '../mock/offers.js';
 
-import { TYPEPOINT } from '../const.js';
+import { TYPEPOINTS } from '../const.js';
 
 import { getRandomInt, getRandomArrayElement} from '../utils.js';
 
@@ -37,7 +37,7 @@ export default class MockService {
   }
 
   generateOffers() {
-    return TYPEPOINT.map((type) => ({
+    return TYPEPOINTS.map((type) => ({
       type,
       offers: Array.from({length:getRandomInt(0, 5)}, () => generateMockOffers(type))
     }));
@@ -45,7 +45,7 @@ export default class MockService {
 
   generatePoints() {
     return Array.from({length: 5}, () => {
-      const type = getRandomArrayElement(TYPEPOINT);
+      const type = getRandomArrayElement(TYPEPOINTS);
       const destination = getRandomArrayElement(this.destinations);
 
       const hasOffers = getRandomInt(0, 1);

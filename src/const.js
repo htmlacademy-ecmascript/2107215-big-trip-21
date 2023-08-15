@@ -16,7 +16,7 @@ const DESCRIPTIONS = [
   'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.'
 ];
 
-const TYPEPOINT = [
+const TYPEPOINTS = [
   'taxi',
   'bus',
   'train',
@@ -29,12 +29,12 @@ const TYPEPOINT = [
 ];
 
 const DATE_FORMAT = {
-  fullData: 'DD/MM/YY HH:mm',
-  hourMinute: 'HH:mm',
-  monthDay: 'MMM DD',
-  hour: 'HH',
-  minute: 'mm',
-  day: 'DD',
+  FULL_DATA: 'DD/MM/YY HH:mm',
+  HOUR_MINUTE: 'HH:mm',
+  MONTH_DAY: 'MMM DD',
+  HOUR: 'HH',
+  MINUTE: 'mm',
+  DAY: 'DD',
 };
 
 const DEFAULT_TYPE = 'flight';
@@ -55,4 +55,4 @@ const Duration = {
   HOUR: 23
 };
 
-export {TYPEPOINT, ROUTE_COUNT, DATE_FORMAT, DEFAULT_TYPE, CITES, DESCRIPTIONS, POINT_EMPTY, Duration};
+export {TYPEPOINTS, ROUTE_COUNT, DATE_FORMAT, DEFAULT_TYPE, CITES, DESCRIPTIONS, POINT_EMPTY, Duration};

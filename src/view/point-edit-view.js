@@ -1,6 +1,6 @@
-import {createElement} from '../render.js';
-import {humanizeDate, CreateToUpperCase} from '../utils.js';
-import {DATE_FORMAT, POINT_EMPTY} from '../const.js';
+import { createElement } from '../render.js';
+import { humanizeDate, CreateToUpperCase } from '../utils.js';
+import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
 
 const createOfferSelectorTemplate = (offers) =>
   offers.map((currentOffer) => {
@@ -83,10 +83,10 @@ const createPointEditTemplate = ({point = POINT_EMPTY, pointDestination, pointOf
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dataTime.start, DATE_FORMAT.fullData)}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dataTime.start, DATE_FORMAT.FULL_DATA)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dataTime.end, DATE_FORMAT.fullData)}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dataTime.end, DATE_FORMAT.FULL_DATA)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
