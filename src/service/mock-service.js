@@ -5,6 +5,10 @@ import { TYPEPOINTS } from '../const.js';
 import { getRandomInt, getRandomArrayElement } from '../utils.js';
 
 export default class MockService {
+  destinations = [];
+  offers = [];
+  points = [];
+
   constructor() {
     this.destinations = this.generateDestination();
     this.offers = this.generateOffers();
