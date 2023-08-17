@@ -34,27 +34,27 @@ const humanizeDate = (date, dataFormat) =>
   date ? dayjs(date).format(dataFormat) : '';
 
 const dateDiff = (date1, date2) => {
-  const fromtime = dayjs(date1);
-  const totime = dayjs(date2);
-  const diffTime = totime.diff(fromtime, 'minutes');
-  const dateDay = Math.floor(diffTime / 1440);
-  const answerH = diffTime - dateDay * 1440;
-  const dateHour = Math.floor(answerH / 60);
-  const dateMinute = answerH - dateHour * 60;
+  const fromTime = dayjs(date1);
+  const toTime = dayjs(date2);
+  const diffTime = toTime.diff(fromTime, 'minutes');
+  const timeDay = Math.floor(diffTime / 1440);
+  const answerH = diffTime - timeDay * 1440;
+  const timeHour = Math.floor(answerH / 60);
+  const timeMinute = answerH - timeHour * 60;
 
   let answer = '';
 
-  if (diffTime < 0) {
+  if (diffTime <= 0) {
     return 'wrong date';
   } else {
-    if (dateDay !== 0) {
-      answer = `${dateDay.toString().padStart(2, '0')}d `;
+    if (timeDay !== 0) {
+      answer = `${timeDay.toString().padStart(2, '0')}d `;
     }
-    if (dateHour !== 0) {
-      answer += `${dateHour.toString().padStart(2, '0')}h ` ;
+    if (timeHour !== 0) {
+      answer += `${timeHour.toString().padStart(2, '0')}h ` ;
     }
-    if (dateMinute !== 0) {
-      answer += `${dateMinute.toString().padStart(2, '0')}m` ;
+    if (timeMinute !== 0) {
+      answer += `${timeMinute.toString().padStart(2, '0')}m` ;
     }
     return answer;
   }
