@@ -35,6 +35,7 @@ export default class BoardPresenter {
           point,
           pointDestination: this.destinationsModel.getById(point.destination),
           pointOffer: this.offersModel.getByType(point.type)
+
         }),
         this.tripListComponent.getElement()
         );

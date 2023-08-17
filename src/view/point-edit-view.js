@@ -3,17 +3,17 @@ import { humanizeDate, CreateToUpperCase } from '../utils.js';
 import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
 
 const createOfferSelectorTemplate = (offers) =>
-  offers.map((currentOffer) => {
-    const isChecked = !offers.includes(currentOffer.id);
+  offers.map((item) => {
+    const isChecked = !offers.includes(item.id);
     const checked = isChecked ? 'checked' : '';
 
     return (
       `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${currentOffer.id}" type="checkbox" name="${currentOffer.id}" ${checked}>
-    <label class="event__offer-label" for="${currentOffer.id}">
-      <span class="event__offer-title">${currentOffer.title}</span>
+    <input class="event__offer-checkbox  visually-hidden" id="${item.id}" type="checkbox" name="${item.id}" ${checked}>
+    <label class="event__offer-label" for="${item.id}">
+      <span class="event__offer-title">${item.title}</span>
       &plus;&euro;&nbsp;
-      <span class="event__offer-price">${currentOffer.price}</span>
+      <span class="event__offer-price">${item.price}</span>
     </label>
       </div>`
     );
@@ -61,7 +61,7 @@ const createTypesListTemplate = (offerTypes, type) => {
 const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer }) => {
   const { dateFrom, dateTo, type, basePrice } = point;
   const offersByType = pointOffer.find((item) => item.type === type).offers;
-  const currentDestination = pointDestination.find((destination) => destination.id === point.destination);
+  const currentDestination = pointDestination.find((item) => item.id === point.destination);
 
   return (
     `<li class="trip-events__item">

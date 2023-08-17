@@ -1,4 +1,4 @@
-const CITES = [
+const CITIES = [
   'Rubcovsk',
   'Novosibirsk',
   'Barnaul',
@@ -36,9 +36,6 @@ const DATE_FORMAT = {
   FULL_DATA: 'DD/MM/YY HH:mm',
   HOUR_MINUTE: 'HH:mm',
   MONTH_DAY: 'MMM DD',
-  HOUR: 'HH',
-  MINUTE: 'mm',
-  DAY: 'DD',
 };
 
 const DEFAULT_TYPE = 'flight';
@@ -59,4 +56,4 @@ const Duration = {
   HOUR: 23
 };
 
-export {TYPEPOINTS, DATE_FORMAT, DEFAULT_TYPE, CITES, DESCRIPTIONS, POINT_EMPTY, DESCRIPTION_PICTURES, Duration};
+export {TYPEPOINTS, DATE_FORMAT, DEFAULT_TYPE, CITIES, DESCRIPTIONS, POINT_EMPTY, DESCRIPTION_PICTURES, Duration};

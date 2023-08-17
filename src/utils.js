@@ -1,8 +1,5 @@
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import {Duration, DATE_FORMAT} from './const.js';
-
-dayjs.extend(utc);
+import { Duration } from './const.js';
 
 const getRandomArrayElement = (items) =>
   items[Math.floor(Math.random() * items.length)];
@@ -36,27 +33,28 @@ const getDate = ({next}) => {
 const humanizeDate = (date, dataFormat) =>
   date ? dayjs(date).format(dataFormat) : '';
 
-const humanizeDateUtc = (date, dataFormat) =>
-  date ? dayjs(date).utcOffset(0).format(dataFormat) : '';
-
 const dateDiff = (date1, date2) => {
   let answer = '';
-  const diffTime = (date2 - date1);
-  const diffTimeHours = humanizeDateUtc(diffTime, DATE_FORMAT.HOUR);
-  const diffTimeMinutes = humanizeDateUtc(diffTime, DATE_FORMAT.MINUTE);
-  const diffTimeDays = humanizeDateUtc(diffTime, DATE_FORMAT.DAY);
+  const fromtime = dayjs(date1);
+  const totime = dayjs(date2);
 
-  if (diffTime <= 0) {
+  const diffTime = totime.diff(fromtime, 'minutes');
+  const dateDay = Math.floor(diffTime / 1440);
+  const answerH = diffTime - dateDay * 1440;
+  const dateHour = Math.floor(answerH / 60);
+  const dateMinute = answerH - dateHour * 60;
+
+  if (diffTime < 0) {
     return 'wrong date';
   } else {
-    if (diffTimeDays !== 0) {
-      answer = `${diffTimeDays}d `;
+    if (dateDay !== 0) {
+      answer = `${dateDay.toString().padStart(2, '0')}d `;
     }
-    if (diffTimeHours !== 0) {
-      answer += `${diffTimeHours}h ` ;
+    if (dateHour !== 0) {
+      answer += `${dateHour.toString().padStart(2, '0')}h ` ;
     }
-    if (diffTimeMinutes !== 0) {
-      answer += `${diffTimeMinutes}m` ;
+    if (dateMinute !== 0) {
+      answer += `${dateMinute.toString().padStart(2, '0')}m` ;
     }
     return answer;
   }
