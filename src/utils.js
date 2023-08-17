@@ -34,15 +34,15 @@ const humanizeDate = (date, dataFormat) =>
   date ? dayjs(date).format(dataFormat) : '';
 
 const dateDiff = (date1, date2) => {
-  let answer = '';
   const fromtime = dayjs(date1);
   const totime = dayjs(date2);
-
   const diffTime = totime.diff(fromtime, 'minutes');
   const dateDay = Math.floor(diffTime / 1440);
   const answerH = diffTime - dateDay * 1440;
   const dateHour = Math.floor(answerH / 60);
   const dateMinute = answerH - dateHour * 60;
+
+  let answer = '';
 
   if (diffTime < 0) {
     return 'wrong date';
