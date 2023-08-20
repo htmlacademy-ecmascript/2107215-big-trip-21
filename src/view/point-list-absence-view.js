@@ -1,12 +1,16 @@
 import { createElement } from '../render.js';
 
-function createButtonHeardTemplate() {
-  return '<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow">New event<button>';
+function createPointListAbsenceTemplate() {
+  return (
+    `<div class="point-list-absence">
+      <p>«Click New Event to create your first point»<p>
+     </div>`
+  );
 }
 
-export default class ButtonHeardView {
+export default class PointListAbsenceView {
   getTemplate() {
-    return createButtonHeardTemplate();
+    return createPointListAbsenceTemplate();
   }
 
   getElement() {
