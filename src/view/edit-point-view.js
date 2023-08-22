@@ -1,4 +1,3 @@
-// import { createElement } from '../render.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDate, CreateToUpperCase } from '../utils.js';
 import { DATE_FORMAT, POINT_EMPTY } from '../const.js';

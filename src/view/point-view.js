@@ -1,4 +1,3 @@
-// import { createElement } from '../render.js';
 import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
 import { humanizeDate, dateDiff } from '../utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
