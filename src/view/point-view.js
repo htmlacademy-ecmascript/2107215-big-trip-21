@@ -1,6 +1,7 @@
-import { createElement } from '../render.js';
+// import { createElement } from '../render.js';
 import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
 import { humanizeDate, dateDiff } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createViewOffersList = (offers) =>
   `<ul class="event__selected-offers">
@@ -61,30 +62,31 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
   );
 };
 
-export default class PointView {
-  constructor({point = POINT_EMPTY, pointDestination, pointOffer}) {
-    this.point = point;
-    this.pointDestination = pointDestination;
-    this.pointOffer = pointOffer;
+export default class PointView extends AbstractView {
+  #point = null;
+  #pointDestination = null;
+  #pointOffer = null;
+  #handleEditClick = null;
+
+  constructor({point = POINT_EMPTY, pointDestination, pointOffer, onEditClick}) {
+    super();
+    this.#point = point;
+    this.#pointDestination = pointDestination;
+    this.#pointOffer = pointOffer;
+    this.#handleEditClick = onEditClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickEditHandler);
   }
 
-  getTemplate() {
+  get template() {
     return createPointTemplate({
-      point: this.point,
-      pointDestination: this.pointDestination,
-      pointOffer: this.pointOffer
+      point: this.#point,
+      pointDestination: this.#pointDestination,
+      pointOffer: this.#pointOffer
     });
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #clickEditHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }
