@@ -1,5 +1,5 @@
 import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
-import { humanizeDate, dateDiff } from '../utils.js';
+import { humanizeDate, dateDiff } from '../utils/utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createViewOffersList = (offers) =>
@@ -65,15 +65,15 @@ export default class PointView extends AbstractView {
   #point = null;
   #pointDestination = null;
   #pointOffer = null;
-  #handleEditClick = null;
+  #handleOpenClick = null;
 
-  constructor({point = POINT_EMPTY, pointDestination, pointOffer, onEditClick}) {
+  constructor({point = POINT_EMPTY, pointDestination, pointOffer, onOpenClick}) {
     super();
     this.#point = point;
     this.#pointDestination = pointDestination;
     this.#pointOffer = pointOffer;
-    this.#handleEditClick = onEditClick;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.#handleOpenClick = onOpenClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#openClickHandler);
   }
 
   get template() {
@@ -84,8 +84,8 @@ export default class PointView extends AbstractView {
     });
   }
 
-  #editClickHandler = (evt) => {
+  #openClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditClick();
+    this.#handleOpenClick();
   };
 }

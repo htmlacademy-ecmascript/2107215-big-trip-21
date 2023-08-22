@@ -2,9 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 function createPointListAbsenceTemplate() {
   return (
-    `<div class="point-list-absence">
-      <p>«Click New Event to create your first point»<p>
-     </div>`
+    '<p class="trip-events__msg">Click New Event to create your first point</p>'
   );
 }
 

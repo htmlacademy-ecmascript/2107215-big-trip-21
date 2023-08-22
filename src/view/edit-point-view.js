@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeDate, CreateToUpperCase } from '../utils.js';
+import { humanizeDate, CreateToUpperCase } from '../utils/utils.js';
 import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
 
 const createOfferSelectorTemplate = (offers) =>
