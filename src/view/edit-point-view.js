@@ -98,7 +98,7 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestination, pointO
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">Delete</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
@@ -127,18 +127,21 @@ export default class EditPointView extends AbstractView {
   #point = null;
   #pointDestination = null;
   #pointOffer = null;
-  #handleSubmit = null;
+  #handleFormSubmit = null;
   #handleCloseClick = null;
+  #handleDeleteClick = null;
 
-  constructor({ point = POINT_EMPTY, pointDestination, pointOffer, onSubmit, onCloseClick }) {
+  constructor({ point = POINT_EMPTY, pointDestination, pointOffer, onFormSubmit, onCloseClick, onDeleteClick }) {
     super();
     this.#point = point;
     this.#pointDestination = pointDestination;
     this.#pointOffer = pointOffer;
-    this.#handleSubmit = onSubmit;
+    this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
-    this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickCloseHandler);
+    this.#handleDeleteClick = onDeleteClick;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
   }
 
   get template() {
@@ -149,14 +152,19 @@ export default class EditPointView extends AbstractView {
     });
   }
 
-  #submitHandler = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleSubmit();
+    this.#handleFormSubmit();
   };
 
-  #clickCloseHandler = (evt) => {
+  #closeClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleCloseClick();
+  };
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick();
   };
 }
 

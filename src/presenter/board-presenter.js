@@ -1,4 +1,4 @@
-import { render, replace } from '../framework/render';
+import { render, replace, remove } from '../framework/render';
 import SortView from '../view/sort-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
@@ -42,14 +42,18 @@ export default class BoardPresenter {
       point,
       pointDestination: this.#destinationsModel.destinations,
       pointOffer: this.#offersModel.offers,
-      onSubmit: () => {
+      onFormSubmit: () => {
         replaceToItemElement();
         document.removeEventListener('keydown', escKeyDownHandler);
       },
       onCloseClick: () => {
         replaceToItemElement();
         document.removeEventListener('keydown', escKeyDownHandler);
-      }
+      },
+      onDeleteClick: () => {
+        document.removeEventListener('keydown', escKeyDownHandler);
+        remove(editPointComponent);
+      },
     });
 
     const eventPointComponent = new PointView({
