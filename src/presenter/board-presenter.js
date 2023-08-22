@@ -22,6 +22,10 @@ export default class BoardPresenter {
   }
 
   init() {
+    this.#renderBoard();
+  }
+
+  #renderBoard() {
     render(new SortView(), this.#boardContainer);
     render(this.#tripListComponent, this.#boardContainer);
     this.#renderPointList();
@@ -38,6 +42,14 @@ export default class BoardPresenter {
   }
 
   #renderPoint(point) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceToItemElement();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
     const editPointComponent = new EditPointView({
       point,
       pointDestination: this.#destinationsModel.destinations,
@@ -72,14 +84,6 @@ export default class BoardPresenter {
 
     function replaceToItemElement() {
       replace(eventPointComponent, editPointComponent);
-    }
-
-    function escKeyDownHandler(evt) {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceToItemElement();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
     }
 
     render(eventPointComponent, this.#tripListComponent.element);

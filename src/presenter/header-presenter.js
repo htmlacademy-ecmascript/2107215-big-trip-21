@@ -13,6 +13,10 @@ export default class HeaderPresenter {
   }
 
   init() {
+    this.#renderHeader();
+  }
+
+  #renderHeader() {
     render(new FilterView(), this.#tripFilterElement);
     render(new InfoView(), this.#tripMainElement, RenderPosition.AFTERBEGIN);
     render(new ButtonHeardView(), this.#tripMainElement);
