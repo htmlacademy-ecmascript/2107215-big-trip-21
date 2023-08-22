@@ -45,7 +45,7 @@ export default class BoardPresenter {
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
-        replaceToItemElement();
+        replaceFormToItem();
         document.removeEventListener('keydown', escKeyDownHandler);
       }
     };
@@ -55,11 +55,11 @@ export default class BoardPresenter {
       pointDestination: this.#destinationsModel.destinations,
       pointOffer: this.#offersModel.offers,
       onFormSubmit: () => {
-        replaceToItemElement();
+        replaceFormToItem();
         document.removeEventListener('keydown', escKeyDownHandler);
       },
       onCloseClick: () => {
-        replaceToItemElement();
+        replaceFormToItem();
         document.removeEventListener('keydown', escKeyDownHandler);
       },
       onDeleteClick: () => {
@@ -73,16 +73,16 @@ export default class BoardPresenter {
       pointDestination: this.#destinationsModel.getById(point.destination),
       pointOffer: this.#offersModel.getByType(point.type),
       onEditClick: () => {
-        replaceToFormElement();
+        replaceItemToForm();
         document.addEventListener('keydown', escKeyDownHandler);
       }
     });
 
-    function replaceToFormElement() {
+    function replaceItemToForm() {
       replace(editPointComponent, eventPointComponent);
     }
 
-    function replaceToItemElement() {
+    function replaceFormToItem() {
       replace(eventPointComponent, editPointComponent);
     }
 
