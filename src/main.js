@@ -11,7 +11,6 @@ const tripFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventElement = document.querySelector('.trip-events');
 
 const mockService = new MockService();
-console.log(mockService);
 const pointsModel = new PointsModel(mockService);
 const offersModel = new OffersModel(mockService);
 const destinationsModel = new DestinationsModel(mockService);
@@ -24,7 +23,7 @@ const boardPresenter = new BoardPresenter({
 const headerPresenter = new HeaderPresenter({
   tripFilterElement,
   tripMainElement
-})
+});
 
 boardPresenter.init();
 headerPresenter.init();

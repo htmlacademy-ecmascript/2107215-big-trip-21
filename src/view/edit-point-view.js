@@ -100,6 +100,9 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestination, pointO
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
@@ -126,14 +129,17 @@ export default class EditPointView extends AbstractView {
   #pointDestination = null;
   #pointOffer = null;
   #handleSubmit = null;
+  #handleCloseClick = null;
 
-  constructor({ point = POINT_EMPTY, pointDestination, pointOffer, onSubmit }) {
+  constructor({ point = POINT_EMPTY, pointDestination, pointOffer, onSubmit, onCloseClick }) {
     super();
     this.#point = point;
     this.#pointDestination = pointDestination;
     this.#pointOffer = pointOffer;
     this.#handleSubmit = onSubmit;
+    this.#handleCloseClick = onCloseClick;
     this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickCloseHandler);
   }
 
   get template() {
@@ -147,6 +153,11 @@ export default class EditPointView extends AbstractView {
   #submitHandler = (evt) => {
     evt.preventDefault();
     this.#handleSubmit();
+  };
+
+  #clickCloseHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseClick();
   };
 }
 

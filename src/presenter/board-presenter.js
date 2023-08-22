@@ -30,35 +30,23 @@ export default class BoardPresenter {
   #renderPointList() {
     if (this.#points.length) {
       this.#points.forEach((point) => {
-        this.#renderPoint(point)
+        this.#renderPoint(point);
       });
     } else {
       render(new PointListAbsence(), this.#boardContainer);
     }
-  };
+  }
 
   #renderPoint(point) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceToItemElement();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const replaceToFormElement = () => {
-      replace(editPointComponent, eventPointComponent);
-    }
-
-    const replaceToItemElement = () => {
-      replace(eventPointComponent, editPointComponent);
-    }
-
     const editPointComponent = new EditPointView({
       point,
       pointDestination: this.#destinationsModel.destinations,
       pointOffer: this.#offersModel.offers,
       onSubmit: () => {
+        replaceToItemElement();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      },
+      onCloseClick: () => {
         replaceToItemElement();
         document.removeEventListener('keydown', escKeyDownHandler);
       }
@@ -69,13 +57,29 @@ export default class BoardPresenter {
       pointDestination: this.#destinationsModel.getById(point.destination),
       pointOffer: this.#offersModel.getByType(point.type),
       onEditClick: () => {
-        replaceToFormElement()
+        replaceToFormElement();
         document.addEventListener('keydown', escKeyDownHandler);
       }
     });
 
-    render(eventPointComponent, this.#tripListComponent.element)
-  };
+    function replaceToFormElement() {
+      replace(editPointComponent, eventPointComponent);
+    }
+
+    function replaceToItemElement() {
+      replace(eventPointComponent, editPointComponent);
+    }
+
+    function escKeyDownHandler(evt) {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceToItemElement();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    }
+
+    render(eventPointComponent, this.#tripListComponent.element);
+  }
 }
 
 
