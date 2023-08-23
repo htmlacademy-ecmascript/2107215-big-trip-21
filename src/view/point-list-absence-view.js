@@ -1,10 +1,9 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createPointListAbsenceTemplate() {
-  return (
-    '<p class="trip-events__msg">Click New Event to create your first point</p>'
-  );
-}
+const createPointListAbsenceTemplate = () =>
+  `
+    <p class="trip-events__msg">Click New Event to create your first point</p>
+  `;
 
 export default class PointListAbsenceView extends AbstractView {
   get template() {

@@ -52,8 +52,8 @@ export default class BoardPresenter {
 
     const editPointComponent = new EditPointView({
       point,
-      pointDestination: this.#destinationsModel.destinations,
-      pointOffer: this.#offersModel.offers,
+      pointDestinations: this.#destinationsModel.destinations,
+      pointOffers: this.#offersModel.offers,
       onFormSubmit: () => {
         replaceFormToItem();
         document.removeEventListener('keydown', escKeyDownHandler);

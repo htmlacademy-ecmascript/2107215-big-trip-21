@@ -1,9 +1,9 @@
 import { render, RenderPosition } from '../framework/render';
-import ButtonHeardView from '../view/button-heard-view';
+import NewEventButtonView from '../view/new-event-button-view.js';
 import InfoView from '../view/info-view.js';
 import FilterView from '../view/filter-view.js';
 
-export default class HeaderPresenter {
+export default class GeneralTripManagementPresenter {
   #tripMainElement = null;
   #tripFilterElement = null;
   #filters = [];
@@ -21,6 +21,6 @@ export default class HeaderPresenter {
   #renderHeader() {
     render(new FilterView({ filters: this.#filters }), this.#tripFilterElement);
     render(new InfoView(), this.#tripMainElement, RenderPosition.AFTERBEGIN);
-    render(new ButtonHeardView(), this.#tripMainElement);
+    render(new NewEventButtonView(), this.#tripMainElement);
   }
 }
