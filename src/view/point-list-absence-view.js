@@ -1,27 +1,12 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
-function createPointListAbsenceTemplate() {
-  return (
-    `<div class="point-list-absence">
-      <p>«Click New Event to create your first point»<p>
-     </div>`
-  );
-}
+const createPointListAbsenceTemplate = () =>
+  `
+    <p class="trip-events__msg">Click New Event to create your first point</p>
+  `;
 
-export default class PointListAbsenceView {
-  getTemplate() {
+export default class PointListAbsenceView extends AbstractView {
+  get template() {
     return createPointListAbsenceTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

@@ -1,6 +1,6 @@
-import { createElement } from '../render.js';
 import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
-import { humanizeDate, dateDiff } from '../utils.js';
+import { humanizeDate, dateDiff } from '../utils/utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createViewOffersList = (offers) =>
   `<ul class="event__selected-offers">
@@ -61,30 +61,31 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
   );
 };
 
-export default class PointView {
-  constructor({point = POINT_EMPTY, pointDestination, pointOffer}) {
-    this.point = point;
-    this.pointDestination = pointDestination;
-    this.pointOffer = pointOffer;
+export default class PointView extends AbstractView {
+  #point = null;
+  #pointDestination = null;
+  #pointOffer = null;
+  #handleOpenClick = null;
+
+  constructor({point = POINT_EMPTY, pointDestination, pointOffer, onOpenClick}) {
+    super();
+    this.#point = point;
+    this.#pointDestination = pointDestination;
+    this.#pointOffer = pointOffer;
+    this.#handleOpenClick = onOpenClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#openClickHandler);
   }
 
-  getTemplate() {
+  get template() {
     return createPointTemplate({
-      point: this.point,
-      pointDestination: this.pointDestination,
-      pointOffer: this.pointOffer
+      point: this.#point,
+      pointDestination: this.#pointDestination,
+      pointOffer: this.#pointOffer
     });
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #openClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleOpenClick();
+  };
 }
