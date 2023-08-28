@@ -1,9 +1,9 @@
-import { render, replace, remove } from '../framework/render';
+import { render } from '../framework/render';
 import SortView from '../view/sort-view.js';
-import EditPointView from '../view/edit-point-view.js';
-import PointView from '../view/point-view.js';
 import TripListView from '../view/trip-list-view.js';
 import PointListAbsence from '../view/point-list-absence-view.js';
+import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils/common.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -12,6 +12,7 @@ export default class BoardPresenter {
   #destinationsModel = null;
   #tripListComponent = new TripListView();
   #points = [];
+  #pointPresenters = new Map();
 
   constructor({boardContainer, pointsModel, offersModel, destinationsModel}) {
     this.#boardContainer = boardContainer;
@@ -26,68 +27,49 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
-    render(new SortView(), this.#boardContainer);
+    this.#renderSort();
     render(this.#tripListComponent, this.#boardContainer);
+    this.#renderNoPointList();
     this.#renderPointList();
   }
+
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #renderSort() {
+    render(new SortView(), this.#boardContainer);
+  }
+
+  #renderNoPointList() {
+    if (this.#points.length === 0) {
+      render(new PointListAbsence(), this.#boardContainer);
+    }
+  }
+
+  #handlePointChange = (updatedPoint) => {
+    this.#points = updateItem(this.#points, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
 
   #renderPointList() {
     if (this.#points.length) {
       this.#points.forEach((point) => {
         this.#renderPoint(point);
       });
-    } else {
-      render(new PointListAbsence(), this.#boardContainer);
     }
   }
 
   #renderPoint(point) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToItem();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const editPointComponent = new EditPointView({
-      point,
-      pointDestinations: this.#destinationsModel.destinations,
-      pointOffers: this.#offersModel.offers,
-      onFormSubmit: () => {
-        replaceFormToItem();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
-      onCloseClick: () => {
-        replaceFormToItem();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
-      onDeleteClick: () => {
-        document.removeEventListener('keydown', escKeyDownHandler);
-        remove(editPointComponent);
-      },
+    const pointPresenter = new PointPresenter({
+      tripListContainer: this.#tripListComponent,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange
     });
 
-    const eventPointComponent = new PointView({
-      point,
-      pointDestination: this.#destinationsModel.getById(point.destination),
-      pointOffer: this.#offersModel.getByType(point.type),
-      onOpenClick: () => {
-        replaceItemToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    function replaceItemToForm() {
-      replace(editPointComponent, eventPointComponent);
-    }
-
-    function replaceFormToItem() {
-      replace(eventPointComponent, editPointComponent);
-    }
-
-    render(eventPointComponent, this.#tripListComponent.element);
+    pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
 }
-
-

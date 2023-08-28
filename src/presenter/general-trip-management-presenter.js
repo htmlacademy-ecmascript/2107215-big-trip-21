@@ -18,12 +18,24 @@ export default class GeneralTripManagementPresenter {
   }
 
   init() {
-    this.#renderHeader();
+    this.#renderGeneralTripManagement();
   }
 
-  #renderHeader() {
+  #renderGeneralTripManagement() {
+    this.#renderFilter();
+    this.#renderInfo();
+    this.#renderButton();
+  }
+
+  #renderFilter() {
     render(new FilterView({ filters: this.#filters }), this.#tripFilterElement);
+  }
+
+  #renderInfo() {
     render(new InfoView(), this.#tripMainElement, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderButton() {
     render(new NewEventButtonView(), this.#tripMainElement);
   }
 }
