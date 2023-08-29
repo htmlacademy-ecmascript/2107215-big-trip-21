@@ -40,13 +40,15 @@ export default class BoardPresenter {
     this.#renderPointList();
   }
 
-  #renderSort() {
-    this.#sortComponent = new SortView({
-      onSortTypeChange: this.#handleSortTypeChange
-    });
-    this.#sortPoints(this.#currentSortType);
-    render(this.#sortComponent, this.#boardContainer);
-  }
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #handlePointChange = (updatedPoint) => {
+    this.#points = updateItem(this.#points, updatedPoint);
+    this.#sourcedPoints = updateItem(this.#sourcedPoints, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
 
   #sortPoints(sortType) {
     switch (sortType) {
@@ -66,15 +68,27 @@ export default class BoardPresenter {
     this.#currentSortType = sortType;
   }
 
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    this.#clearPointList();
+    this.#renderPointList();
+  };
+
   #clearPointList() {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
   }
 
-  #renderNoPointList() {
-    if (this.#points.length === 0) {
-      render(this.#noPointComponent, this.#boardContainer);
-    }
+  #renderSort() {
+    this.#sortComponent = new SortView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+    this.#sortPoints(this.#currentSortType);
+    render(this.#sortComponent, this.#boardContainer);
   }
 
   #renderPointList() {
@@ -82,6 +96,12 @@ export default class BoardPresenter {
       this.#points.forEach((point) => {
         this.#renderPoint(point);
       });
+    }
+  }
+
+  #renderNoPointList() {
+    if (this.#points.length === 0) {
+      render(this.#noPointComponent, this.#boardContainer);
     }
   }
 
@@ -97,24 +117,4 @@ export default class BoardPresenter {
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
   }
-
-  #handleModeChange = () => {
-    this.#pointPresenters.forEach((presenter) => presenter.resetView());
-  };
-
-  #handlePointChange = (updatedPoint) => {
-    this.#points = updateItem(this.#points, updatedPoint);
-    this.#sourcedPoints = updateItem(this.#sourcedPoints, updatedPoint);
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
-  };
-
-  #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) {
-      return;
-    }
-
-    this.#sortPoints(sortType);
-    this.#clearPointList();
-    this.#renderPointList();
-  };
 }
