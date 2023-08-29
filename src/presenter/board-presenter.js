@@ -5,7 +5,7 @@ import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
 import { updateItem } from '../utils/common.js';
 import { SortType } from '../const.js';
-import { sortPointByTime, sortPointByPrice, sortPointByDay } from '../utils/sort.js';
+import { sortPointsByTime, sortPointsByPrice, sortPointsByDay } from '../utils/sort.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -53,13 +53,13 @@ export default class BoardPresenter {
   #sortPoints(sortType) {
     switch (sortType) {
       case SortType.TIME:
-        this.#points.sort(sortPointByTime);
+        this.#points.sort(sortPointsByTime);
         break;
       case SortType.PRICE:
-        this.#points.sort(sortPointByPrice);
+        this.#points.sort(sortPointsByPrice);
         break;
       case SortType.DAY:
-        this.#points.sort(sortPointByDay);
+        this.#points.sort(sortPointsByDay);
         break;
       default:
         this.#points = [...this.#sourcedPoints];
