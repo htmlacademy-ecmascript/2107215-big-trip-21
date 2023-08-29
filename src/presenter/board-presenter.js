@@ -44,12 +44,11 @@ export default class BoardPresenter {
     this.#sortComponent = new SortView({
       onSortTypeChange: this.#handleSortTypeChange
     });
+    this.#sortPoints(this.#currentSortType);
     render(this.#sortComponent, this.#boardContainer);
   }
 
-  #sortTasks(sortType) {
-    // Этот исходный массив задач необходим,
-    // потому что для сортировки мы будем мутировать массив
+  #sortPoints(sortType) {
     switch (sortType) {
       case SortType.TIME:
         this.#points.sort(sortPointByTime);
@@ -61,8 +60,6 @@ export default class BoardPresenter {
         this.#points.sort(sortPointByDay);
         break;
       default:
-        // А когда пользователь захочет "вернуть всё, как было",
-        // мы просто запишем в _boardTasks исходный массив
         this.#points = [...this.#sourcedPoints];
     }
 
@@ -116,7 +113,7 @@ export default class BoardPresenter {
       return;
     }
 
-    this.#sortTasks(sortType);
+    this.#sortPoints(sortType);
     this.#clearPointList();
     this.#renderPointList();
   };
