@@ -24,7 +24,7 @@ export default class GeneralTripManagementPresenter {
   #renderGeneralTripManagement() {
     this.#renderFilter();
     this.#renderInfo();
-    this.#renderButton();
+    this.#renderNewEventButton();
   }
 
   #renderFilter() {
@@ -35,7 +35,7 @@ export default class GeneralTripManagementPresenter {
     render(new InfoView(), this.#tripMainElement, RenderPosition.AFTERBEGIN);
   }
 
-  #renderButton() {
+  #renderNewEventButton() {
     render(new NewEventButtonView(), this.#tripMainElement);
   }
 }

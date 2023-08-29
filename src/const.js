@@ -63,4 +63,21 @@ const FilterType = {
   PAST: 'past'
 };
 
-export { TYPEPOINTS, DATE_FORMAT, DEFAULT_TYPE, CITIES, DESCRIPTIONS, POINT_EMPTY, DESCRIPTION_PICTURES, Duration, FilterType };
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
+export {
+  TYPEPOINTS,
+  DATE_FORMAT,
+  DEFAULT_TYPE,
+  CITIES,
+  DESCRIPTIONS,
+  POINT_EMPTY,
+  DESCRIPTION_PICTURES,
+  Duration,
+  FilterType,
+  SortType
+};
