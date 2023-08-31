@@ -4,8 +4,8 @@ import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
 import { updateItem } from '../utils/common.js';
-import { SortType } from '../const.js';
-import { sortPointsByTime, sortPointsByPrice, sortPointsByDay } from '../utils/sort.js';
+import { SortType, enabledSortType } from '../const.js';
+import { sort } from '../utils/sort.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -27,6 +27,7 @@ export default class BoardPresenter {
     this.#destinationsModel = destinationsModel;
     this.#points = [...this.#pointsModel.points];
     this.#sourcedPoints = [...this.#pointsModel.points];
+    this.#renderSort();
   }
 
   init() {
@@ -34,7 +35,6 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
-    this.#renderSort();
     render(this.#tripListComponent, this.#boardContainer);
     this.#renderNoPointList();
     this.#renderPointList();
@@ -51,21 +51,8 @@ export default class BoardPresenter {
   };
 
   #sortPoints(sortType) {
-    switch (sortType) {
-      case SortType.TIME:
-        this.#points.sort(sortPointsByTime);
-        break;
-      case SortType.PRICE:
-        this.#points.sort(sortPointsByPrice);
-        break;
-      case SortType.DAY:
-        this.#points.sort(sortPointsByDay);
-        break;
-      default:
-        this.#points = [...this.#sourcedPoints];
-    }
-
     this.#currentSortType = sortType;
+    this.#points = sort[this.#currentSortType](this.#points);
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -84,7 +71,17 @@ export default class BoardPresenter {
   }
 
   #renderSort() {
+    const sortTypes = Object.values(SortType)
+      .map(
+        (type) => ({
+          type,
+          isChecked: (type === this.#currentSortType),
+          isDisabled: !enabledSortType[type]
+        }),
+      );
+
     this.#sortComponent = new SortView({
+      items: sortTypes,
       onSortTypeChange: this.#handleSortTypeChange
     });
     this.#sortPoints(this.#currentSortType);

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { SortType } from '../const.js';
 
 const sortPointsByTime = (pointA, pointB) => {
   const durationPointA = dayjs(pointA.dateTo).valueOf() - dayjs(pointA.dateFrom).valueOf();
@@ -17,4 +18,16 @@ const sortPointsByDay = (pointA, pointB) => {
   return dateA - dateB;
 };
 
-export { sortPointsByTime, sortPointsByPrice, sortPointsByDay };
+const sort = {
+  [SortType.DAY] : (points) => points.sort(sortPointsByDay),
+  [SortType.PRICE] : (points) => points.sort(sortPointsByPrice),
+  [SortType.TIME] : (points) => points.sort(sortPointsByTime),
+  [SortType.EVENT]: () => {
+    throw new Error(`Sort by ${SortType.OFFER} is not implemented`);
+  },
+  [SortType.OFFER]: () => {
+    throw new Error(`Sort by ${SortType.OFFER} is not implemented`);
+  }
+};
+
+export { sort };
