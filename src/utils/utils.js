@@ -48,7 +48,7 @@ const dateDiff = (date1, date2) => {
   }
 };
 
-const CreateToUpperCase = (word) =>
+const createToUpperCase = (word) =>
   word.charAt(0).toUpperCase() + word.slice(1);
 
-export { getDate, humanizeDate, dateDiff, CreateToUpperCase };
+export { getDate, humanizeDate, dateDiff, createToUpperCase };

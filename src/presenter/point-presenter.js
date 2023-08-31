@@ -68,19 +68,16 @@ export default class PointPresenter {
     remove(prevEditPointComponent);
   }
 
+  destroy() {
+    remove(this.#editPointComponent);
+    remove(this.#eventPointComponent);
+  }
+
   resetView() {
     if(this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToItem();
     }
   }
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#replaceFormToItem();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  };
 
   #replaceItemToForm() {
     replace(this.#editPointComponent, this.#eventPointComponent);
@@ -94,6 +91,14 @@ export default class PointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;
   }
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#replaceFormToItem();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  };
 
   #handleFormSubmit = (point) => {
     this.#replaceFormToItem();

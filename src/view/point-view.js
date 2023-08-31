@@ -3,7 +3,8 @@ import { humanizeDate, dateDiff } from '../utils/utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createViewOffersList = (offers) =>
-  `<ul class="event__selected-offers">
+  `
+    <ul class="event__selected-offers">
     ${(offers) ?
     `${offers.offers.map((item) =>
       `<li class="event__offer">
@@ -12,7 +13,8 @@ const createViewOffersList = (offers) =>
         <span class="event__offer-price">${item.price}</span>
       </li>`).join('')}`
     : ''}
-  </ul>`;
+    </ul>
+  `;
 
 const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer }) => {
   const { dateFrom, dateTo, type, basePrice, isFavorite } = point;
