@@ -52,9 +52,9 @@ export default class BoardPresenter {
 
   //временный метод для удаления точки из массива
   #handlePointDeletedChange = (point) => {
-    const filterPoints = this.#points.filter((item) => item.id !== point.id)
+    const filterPoints = this.#points.filter((item) => item.id !== point.id);
     this.#points = filterPoints;
-  }
+  };
 
   #sortPoints(sortType) {
     this.#currentSortType = sortType;
