@@ -50,6 +50,12 @@ export default class BoardPresenter {
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
+  //временный метод для удаления точки из массива
+  #handlePointDeletedChange = (point) => {
+    const filterPoints = this.#points.filter((item) => item.id !== point.id)
+    this.#points = filterPoints;
+  }
+
   #sortPoints(sortType) {
     this.#currentSortType = sortType;
     this.#points = sort[this.#currentSortType](this.#points);
@@ -108,7 +114,8 @@ export default class BoardPresenter {
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onDataChange: this.#handlePointChange,
-      onModeChange: this.#handleModeChange
+      onModeChange: this.#handleModeChange,
+      onDeletedDataChange: this.#handlePointDeletedChange
     });
 
     pointPresenter.init(point);

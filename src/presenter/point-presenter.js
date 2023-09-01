@@ -19,13 +19,15 @@ export default class PointPresenter {
 
   #point = null;
   #mode = Mode.DEFAULT;
+  #handleDeletedDataChange = null;
 
-  constructor({ tripListContainer, offersModel, destinationsModel, onDataChange, onModeChange }) {
+  constructor({ tripListContainer, offersModel, destinationsModel, onDataChange, onModeChange, onDeletedDataChange }) {
     this.#tripListContainer = tripListContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#handleDeletedDataChange = onDeletedDataChange;
   }
 
   init(point) {
@@ -38,9 +40,10 @@ export default class PointPresenter {
       point: this.#point,
       pointDestinations: this.#destinationsModel.destinations,
       pointOffers: this.#offersModel.offers,
+      pointDestination: this.#destinationsModel.getById(this.#point.destination),
       onFormSubmit: this.#handleFormSubmit,
       onCloseClick: this.#handleCloseClick,
-      onDeleteClick: this.#handleDeleteClick
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     this.#eventPointComponent = new PointView({
@@ -112,6 +115,7 @@ export default class PointPresenter {
   #handleDeleteClick = () => {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     remove(this.#editPointComponent);
+    this.#handleDeletedDataChange({...this.#point});
   };
 
   #handleOpenClick = () => {
