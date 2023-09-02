@@ -62,10 +62,10 @@ const createTypesListTemplate = (offerTypes, type) => {
   `;
 };
 
-const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffers }) => {
-  const { dateFrom, dateTo, type, basePrice } = point;
+const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, pointOffers }) => {
+  const { dateFrom, dateTo, type, basePrice, destination } = point;
   const offersByType = pointOffers.find((item) => item.type === type).offers;
-  const currentDestination = pointDestination;
+  const currentDestination = pointDestinations.find((item) => item.id === destination);
 
   return `
     <li class="trip-events__item">
@@ -130,19 +130,16 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestination, pointO
 export default class EditPointView extends AbstractStatefulView {
   #pointDestinations = null;
   #pointOffers = null;
-  #pointDestination = null;
   #handleFormSubmit = null;
   #handleCloseClick = null;
   #handleDeleteClick = null;
   #datepicker = null;
 
-  constructor({ point = POINT_EMPTY, pointDestinations, pointOffers, pointDestination, onFormSubmit, onCloseClick, onDeleteClick }) {
+  constructor({ point = POINT_EMPTY, pointDestinations, pointOffers, onFormSubmit, onCloseClick, onDeleteClick }) {
     super();
     this._setState(EditPointView.parsePointToState(point));
-
     this.#pointDestinations = pointDestinations;
     this.#pointOffers = pointOffers;
-    this.#pointDestination = pointDestination;
 
     this._restoreHandlers();
 
@@ -154,7 +151,7 @@ export default class EditPointView extends AbstractStatefulView {
   get template() {
     return createPointEditTemplate({
       point: this._state,
-      pointDestination: this.#pointDestination,
+      pointDestinations: this.#pointDestinations,
       pointOffers: this.#pointOffers
     });
   }
@@ -195,6 +192,11 @@ export default class EditPointView extends AbstractStatefulView {
 
   #typeChangeHandler = (evt) => {
     evt.preventDefault();
+    const selectedOffer = this.#pointOffers.find((item) => item.type === evt.target.value);
+
+    if (selectedOffer.offers.length === 0) {
+      return;
+    }
 
     this.updateElement({
       type: evt.target.value, offers: []
@@ -212,12 +214,13 @@ export default class EditPointView extends AbstractStatefulView {
   #inputDestinationChangeHandler = (evt) => {
     evt.preventDefault();
     const selectedDestination = this.#pointDestinations.find((item) => item.name === evt.target.value);
+    const inputDestination = this.element.querySelector('.event__input--destination');
 
     if(!selectedDestination) {
+      inputDestination.value = '';
       return;
     }
 
-    this.#pointDestination = selectedDestination;
     this.updateElement({
       destination: selectedDestination.id
     });
@@ -253,7 +256,8 @@ export default class EditPointView extends AbstractStatefulView {
   #setDatepicker() {
     if (this._state.dateFrom) {
       // flatpickr есть смысл инициализировать только в случае,
-      // если поле выбора даты доступно для заполнения
+      // если поле выбора даты доступно для выбора
+
       this.element.querySelectorAll('.event__input--time').
         forEach((item, index) => {
           if(index === 0) {
@@ -262,6 +266,8 @@ export default class EditPointView extends AbstractStatefulView {
               {
                 dateFormat: 'd/m/y H:i',
                 defaultDate: this._state.dateFrom,
+                enableTime: true,
+                minDate: 'today',
                 onChange: this.#dateFromChangeHandler,
               },
             );
@@ -271,6 +277,8 @@ export default class EditPointView extends AbstractStatefulView {
               {
                 dateFormat: 'd/m/y H:i',
                 defaultDate: this._state.dateTo,
+                enableTime: true,
+                minDate: 'today',
                 onChange: this.#dateToChangeHandler,
               });
           }

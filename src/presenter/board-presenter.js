@@ -35,7 +35,7 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
-    render(this.#tripListComponent, this.#boardContainer);
+    // render(this.#tripListComponent, this.#boardContainer);
     this.#renderNoPointList();
     this.#renderPointList();
   }
@@ -96,6 +96,7 @@ export default class BoardPresenter {
 
   #renderPointList() {
     if (this.#points.length) {
+      render(this.#tripListComponent, this.#boardContainer);
       this.#points.forEach((point) => {
         this.#renderPoint(point);
       });

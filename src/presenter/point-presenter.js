@@ -40,7 +40,6 @@ export default class PointPresenter {
       point: this.#point,
       pointDestinations: this.#destinationsModel.destinations,
       pointOffers: this.#offersModel.offers,
-      pointDestination: this.#destinationsModel.getById(this.#point.destination),
       onFormSubmit: this.#handleFormSubmit,
       onCloseClick: this.#handleCloseClick,
       onDeleteClick: this.#handleDeleteClick,
@@ -99,8 +98,11 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#editPointComponent.reset(this.#point);
       this.#replaceFormToItem();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
+
+
     }
   };
 
