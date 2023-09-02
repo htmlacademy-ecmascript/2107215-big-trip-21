@@ -254,7 +254,7 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #setDatepicker() {
-    if (this._state.dateFrom) {
+    if (this._state.dateFrom && this._state.dateTo) {
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для выбора
 
