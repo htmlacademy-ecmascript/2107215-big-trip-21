@@ -190,6 +190,39 @@ export default class EditPointView extends AbstractStatefulView {
     this.#setDatepicker();
   }
 
+  #setDatepicker() {
+    if (this._state.dateFrom && this._state.dateTo) {
+      // flatpickr есть смысл инициализировать только в случае,
+      // если поле выбора даты доступно для выбора
+
+      this.element.querySelectorAll('.event__input--time').
+        forEach((item, index) => {
+          if(index === 0) {
+            this.#datepicker = flatpickr(
+              item,
+              {
+                dateFormat: 'd/m/y H:i',
+                defaultDate: this._state.dateFrom,
+                enableTime: true,
+                minDate: 'today',
+                onChange: this.#dateFromChangeHandler,
+              },
+            );
+          } else {
+            this.#datepicker = flatpickr(
+              item,
+              {
+                dateFormat: 'd/m/y H:i',
+                defaultDate: this._state.dateTo,
+                enableTime: true,
+                minDate: 'today',
+                onChange: this.#dateToChangeHandler,
+              });
+          }
+        });
+    }
+  }
+
   #typeChangeHandler = (evt) => {
     evt.preventDefault();
     const selectedOffer = this.#pointOffers.find((item) => item.type === evt.target.value);
@@ -252,39 +285,6 @@ export default class EditPointView extends AbstractStatefulView {
       dateTo: userDate,
     });
   };
-
-  #setDatepicker() {
-    if (this._state.dateFrom && this._state.dateTo) {
-      // flatpickr есть смысл инициализировать только в случае,
-      // если поле выбора даты доступно для выбора
-
-      this.element.querySelectorAll('.event__input--time').
-        forEach((item, index) => {
-          if(index === 0) {
-            this.#datepicker = flatpickr(
-              item,
-              {
-                dateFormat: 'd/m/y H:i',
-                defaultDate: this._state.dateFrom,
-                enableTime: true,
-                minDate: 'today',
-                onChange: this.#dateFromChangeHandler,
-              },
-            );
-          } else {
-            this.#datepicker = flatpickr(
-              item,
-              {
-                dateFormat: 'd/m/y H:i',
-                defaultDate: this._state.dateTo,
-                enableTime: true,
-                minDate: 'today',
-                onChange: this.#dateToChangeHandler,
-              });
-          }
-        });
-    }
-  }
 
   static parsePointToState(point) {
     return {...point};
