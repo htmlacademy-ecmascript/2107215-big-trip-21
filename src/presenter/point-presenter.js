@@ -77,9 +77,13 @@ export default class PointPresenter {
 
   resetView() {
     if(this.#mode !== Mode.DEFAULT) {
-      this.#editPointComponent.reset(this.#point);
+      this.#resetPoint();
       this.#replaceFormToItem();
     }
+  }
+
+  #resetPoint() {
+    this.#editPointComponent.reset(this.#point);
   }
 
   #replaceItemToForm() {
@@ -98,11 +102,9 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
-      this.#editPointComponent.reset(this.#point);
+      this.#resetPoint();
       this.#replaceFormToItem();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
-
-
     }
   };
 
@@ -112,7 +114,7 @@ export default class PointPresenter {
   };
 
   #handleCloseClick = () => {
-    this.#editPointComponent.reset(this.#point);
+    this.#resetPoint();
     this.#replaceFormToItem();
   };
 

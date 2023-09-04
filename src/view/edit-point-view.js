@@ -22,6 +22,17 @@ const createOfferSelectorTemplate = (offers, point) =>
     `;
   }).join('');
 
+const createOfferElementTemplate = (offers, point) => {
+  const offerElement = (offers.length === 0) ? '' :
+    `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      <div class="event__available-offers">
+        ${createOfferSelectorTemplate(offers, point)}
+      </div>
+    </section>`;
+  return offerElement;
+};
+
 const createElementPictures = (pictures) =>
   `${(pictures) ?
     `<div class="event__photos-tape">
@@ -87,10 +98,24 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dateFrom, DATE_FORMAT.FULL_DATA)}">
+            <input
+              class="event__input  event__input--time"
+              id="event-start-time-1"
+              type="text"
+              name="event-start-time"
+              value="${humanizeDate(dateFrom, DATE_FORMAT.FULL_DATA)}"
+              data-date-from
+            >
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dateTo, DATE_FORMAT.FULL_DATA)}">
+            <input
+              class="event__input  event__input--time"
+              id="event-end-time-1"
+              type="text"
+              name="event-end-time"
+              value="${humanizeDate(dateTo, DATE_FORMAT.FULL_DATA)}"
+              data-date-to
+            >
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -108,12 +133,7 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
           </button>
         </header>
         <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-            <div class="event__available-offers">
-            ${createOfferSelectorTemplate(offersByType, point)}
-            </div>
-          </section>
+          ${createOfferElementTemplate(offersByType, point)}
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description">${currentDestination.description}</p>
@@ -176,6 +196,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#inputDestinationChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#inputPriceChangeHandler);
 
     const eventTypes = this.element.querySelectorAll('.event__type-input');
     eventTypes.forEach((element) =>
@@ -192,44 +213,34 @@ export default class EditPointView extends AbstractStatefulView {
 
   #setDatepicker() {
     if (this._state.dateFrom && this._state.dateTo) {
-      // flatpickr есть смысл инициализировать только в случае,
-      // если поле выбора даты доступно для выбора
+      const dateStartElement = this.element.querySelector('[data-date-from]');
+      const dateEndElement = this.element.querySelector('[data-date-to]');
 
-      this.element.querySelectorAll('.event__input--time').
-        forEach((item, index) => {
-          if(index === 0) {
-            this.#datepicker = flatpickr(
-              item,
-              {
-                dateFormat: 'd/m/y H:i',
-                defaultDate: this._state.dateFrom,
-                enableTime: true,
-                minDate: 'today',
-                onChange: this.#dateFromChangeHandler,
-              },
-            );
-          } else {
-            this.#datepicker = flatpickr(
-              item,
-              {
-                dateFormat: 'd/m/y H:i',
-                defaultDate: this._state.dateTo,
-                enableTime: true,
-                minDate: 'today',
-                onChange: this.#dateToChangeHandler,
-              });
-          }
+      this.#datepicker = flatpickr(
+        dateStartElement,
+        {
+          dateFormat: 'd/m/y H:i',
+          defaultDate: this._state.dateFrom,
+          enableTime: true,
+          minDate: 'today',
+          onChange: this.#dateFromChangeHandler,
+        },
+      );
+
+      this.#datepicker = flatpickr(
+        dateEndElement,
+        {
+          dateFormat: 'd/m/y H:i',
+          defaultDate: this._state.dateTo,
+          enableTime: true,
+          minDate: 'today',
+          onChange: this.#dateToChangeHandler,
         });
     }
   }
 
   #typeChangeHandler = (evt) => {
     evt.preventDefault();
-    const selectedOffer = this.#pointOffers.find((item) => item.type === evt.target.value);
-
-    if (selectedOffer.offers.length === 0) {
-      return;
-    }
 
     this.updateElement({
       type: evt.target.value, offers: []
@@ -246,16 +257,30 @@ export default class EditPointView extends AbstractStatefulView {
 
   #inputDestinationChangeHandler = (evt) => {
     evt.preventDefault();
+
     const selectedDestination = this.#pointDestinations.find((item) => item.name === evt.target.value);
-    const inputDestination = this.element.querySelector('.event__input--destination');
 
     if(!selectedDestination) {
-      inputDestination.value = '';
+      evt.target.value = '';
       return;
     }
 
     this.updateElement({
       destination: selectedDestination.id
+    });
+  };
+
+  #inputPriceChangeHandler = (evt) => {
+    evt.preventDefault();
+    const priceValue = evt.target.value;
+
+    if (isNaN(priceValue) || priceValue <= 0 || String(priceValue).includes('.')) {
+      evt.target.value = '';
+      return;
+    }
+
+    this.updateElement({
+      basePrice: priceValue,
     });
   };
 
