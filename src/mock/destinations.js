@@ -8,7 +8,7 @@ const generateMockDestinations = () => {
 
   return {
     id: crypto.randomUUID(),
-    description: description,
+    description: `${city} ${description}`,
     name: city,
     pictures: [
       {

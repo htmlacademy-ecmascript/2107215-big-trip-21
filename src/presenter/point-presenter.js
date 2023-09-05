@@ -19,13 +19,15 @@ export default class PointPresenter {
 
   #point = null;
   #mode = Mode.DEFAULT;
+  #handleDeletedDataChange = null;
 
-  constructor({ tripListContainer, offersModel, destinationsModel, onDataChange, onModeChange }) {
+  constructor({ tripListContainer, offersModel, destinationsModel, onDataChange, onModeChange, onDeletedDataChange }) {
     this.#tripListContainer = tripListContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#handleDeletedDataChange = onDeletedDataChange;
   }
 
   init(point) {
@@ -40,7 +42,7 @@ export default class PointPresenter {
       pointOffers: this.#offersModel.offers,
       onFormSubmit: this.#handleFormSubmit,
       onCloseClick: this.#handleCloseClick,
-      onDeleteClick: this.#handleDeleteClick
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     this.#eventPointComponent = new PointView({
@@ -75,8 +77,13 @@ export default class PointPresenter {
 
   resetView() {
     if(this.#mode !== Mode.DEFAULT) {
+      this.#resetPoint();
       this.#replaceFormToItem();
     }
+  }
+
+  #resetPoint() {
+    this.#editPointComponent.reset(this.#point);
   }
 
   #replaceItemToForm() {
@@ -95,6 +102,7 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#resetPoint();
       this.#replaceFormToItem();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
@@ -106,12 +114,14 @@ export default class PointPresenter {
   };
 
   #handleCloseClick = () => {
+    this.#resetPoint();
     this.#replaceFormToItem();
   };
 
   #handleDeleteClick = () => {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     remove(this.#editPointComponent);
+    this.#handleDeletedDataChange({...this.#point});
   };
 
   #handleOpenClick = () => {
