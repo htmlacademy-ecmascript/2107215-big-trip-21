@@ -1,20 +1,19 @@
 import { render, RenderPosition } from '../framework/render';
 import NewEventButtonView from '../view/new-event-button-view.js';
 import InfoView from '../view/info-view.js';
-import FilterView from '../view/filter-view.js';
-import { generateFilter } from '../mock/filter.js';
+import FilterPresenter from './filter-presenter';
 
 export default class GeneralTripManagementPresenter {
   #tripMainElement = null;
   #tripFilterElement = null;
   #pointsModel = null;
-  #filters = [];
+  #filterModel = null;
 
-  constructor({ tripFilterElement, tripMainElement, pointsModel }) {
+  constructor({ tripFilterElement, tripMainElement, pointsModel, filterModel }) {
     this.#tripMainElement = tripMainElement;
     this.#tripFilterElement = tripFilterElement;
     this.#pointsModel = pointsModel;
-    this.#filters = generateFilter(this.#pointsModel.points);
+    this.#filterModel = filterModel;
   }
 
   init() {
@@ -28,7 +27,13 @@ export default class GeneralTripManagementPresenter {
   }
 
   #renderFilter() {
-    render(new FilterView({ filters: this.#filters }), this.#tripFilterElement);
+    const filterPresenter = new FilterPresenter({
+      filterContainer: this.#tripFilterElement,
+      filterModel: this.#filterModel,
+      pointsModel: this.#pointsModel,
+    });
+
+    filterPresenter.init();
   }
 
   #renderInfo() {
@@ -39,3 +44,4 @@ export default class GeneralTripManagementPresenter {
     render(new NewEventButtonView(), this.#tripMainElement);
   }
 }
+

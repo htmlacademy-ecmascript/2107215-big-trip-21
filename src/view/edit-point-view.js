@@ -123,7 +123,7 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input event__input--price" type="number" id="event-price-1" name="event-price" value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -274,7 +274,7 @@ export default class EditPointView extends AbstractStatefulView {
     evt.preventDefault();
     const priceValue = evt.target.value;
 
-    if (isNaN(priceValue) || priceValue <= 0 || String(priceValue).includes('.')) {
+    if (priceValue <= 0 || String(priceValue).includes('.')) {
       evt.target.value = '';
       return;
     }
@@ -296,7 +296,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClick();
+    this.#handleDeleteClick(EditPointView.parseStateToPoint(this._state));
   };
 
   #dateFromChangeHandler = ([userDate]) => {

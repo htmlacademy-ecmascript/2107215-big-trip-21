@@ -1,33 +1,45 @@
-import { render } from '../framework/render';
+import { render, remove } from '../framework/render';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
-import { updateItem } from '../utils/common.js';
-import { SortType, enabledSortType } from '../const.js';
 import { sort } from '../utils/sort.js';
+import { filter } from '../utils/filter.js';
+import { SortType, enabledSortType, UpdateType, UserAction, FilterType } from '../const.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
   #pointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #filterModel = null;
+
   #tripListComponent = new TripListView();
-  #noPointComponent = new NoPointView();
+  #noPointComponent = null;
   #sortComponent = null;
-  #points = [];
-  #sourcedPoints = [];
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
 
-  constructor({boardContainer, pointsModel, offersModel, destinationsModel}) {
+  constructor({boardContainer, pointsModel, offersModel, destinationsModel, filterModel}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
-    this.#points = [...this.#pointsModel.points];
-    this.#sourcedPoints = [...this.#pointsModel.points];
-    this.#renderSort();
+    this.#filterModel = filterModel;
+    this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
+  }
+
+  get points() {
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[ this.#filterType](points);
+
+    if (this.#currentSortType) {
+      return sort[this.#currentSortType](filteredPoints);
+    }
+    return filteredPoints;
   }
 
   init() {
@@ -35,6 +47,7 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
+    this.#renderSort();
     render(this.#tripListComponent, this.#boardContainer);
     this.#renderNoPointList();
     this.#renderPointList();
@@ -44,36 +57,65 @@ export default class BoardPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handlePointChange = (updatedPoint) => {
-    this.#points = updateItem(this.#points, updatedPoint);
-    this.#sourcedPoints = updateItem(this.#sourcedPoints, updatedPoint);
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  #handleViewAction = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointsModel.deletePoint(updateType, update);
+        break;
+    }
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
   };
 
-  //временный метод для удаления точки из массива
-  #handlePointDeletedChange = (point) => {
-    const filterPoints = this.#points.filter((item) => item.id !== point.id);
-    this.#points = filterPoints;
+  #handleModelEvent = (updateType, data) => {
+    // В зависимости от типа изменений решаем, что делать:
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this.#pointPresenters.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearBoard();
+        this.#renderBoard();
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        this.#clearBoard({resetSortType: true});
+        this.#renderBoard();
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   };
-
-  #sortPoints(sortType) {
-    this.#currentSortType = sortType;
-    this.#points = sort[this.#currentSortType](this.#points);
-  }
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
 
-    this.#sortPoints(sortType);
-    this.#clearPointList();
-    this.#renderPointList();
+    this.#currentSortType = sortType;
+    this.#clearBoard();
+    this.#renderBoard();
   };
 
-  #clearPointList() {
+  #clearBoard({resetSortType = false} = {}) {
+
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#noPointComponent);
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
   }
 
   #renderSort() {
@@ -90,20 +132,24 @@ export default class BoardPresenter {
       items: sortTypes,
       onSortTypeChange: this.#handleSortTypeChange
     });
-    this.#sortPoints(this.#currentSortType);
+
     render(this.#sortComponent, this.#boardContainer);
   }
 
   #renderPointList() {
-    if (this.#points.length) {
-      this.#points.forEach((point) => {
+    if (this.points.length) {
+      this.points.forEach((point) => {
         this.#renderPoint(point);
       });
     }
   }
 
   #renderNoPointList() {
-    if (this.#points.length === 0) {
+    if (this.points.length === 0) {
+      this.#noPointComponent = new NoPointView({
+        filterType: this.#filterType
+      });
+
       render(this.#noPointComponent, this.#boardContainer);
     }
   }
@@ -113,9 +159,8 @@ export default class BoardPresenter {
       tripListContainer: this.#tripListComponent,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
-      onDataChange: this.#handlePointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
-      onDeletedDataChange: this.#handlePointDeletedChange
     });
 
     pointPresenter.init(point);
