@@ -14,5 +14,4 @@ const getRandomInt = (min, max) => {
 const updateItem = (items, update) =>
   items.map((item) => item.id === update.id ? update : item);
 
-
 export { getRandomArrayElement, getRandomInt, updateItem };

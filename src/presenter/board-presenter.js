@@ -3,6 +3,7 @@ import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 import { sort } from '../utils/sort.js';
 import { filter } from '../utils/filter.js';
 import { SortType, enabledSortType, UpdateType, UserAction, FilterType } from '../const.js';
@@ -18,15 +19,27 @@ export default class BoardPresenter {
   #noPointComponent = null;
   #sortComponent = null;
   #pointPresenters = new Map();
+  #newPointPresenter = null;
+
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
-  constructor({boardContainer, pointsModel, offersModel, destinationsModel, filterModel}) {
+
+  constructor({ boardContainer, pointsModel, offersModel, destinationsModel, filterModel, onNewPointDestroy }) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#filterModel = filterModel;
+
+    this.#newPointPresenter = new NewPointPresenter({
+      pointListContainer: this.#tripListComponent,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewPointDestroy,
+      pointDestinations: destinationsModel,
+      pointOffers: offersModel,
+    });
+
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -44,6 +57,12 @@ export default class BoardPresenter {
 
   init() {
     this.#renderBoard();
+  }
+
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
   }
 
   #renderBoard() {
@@ -106,7 +125,7 @@ export default class BoardPresenter {
   };
 
   #clearBoard({resetSortType = false} = {}) {
-
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 

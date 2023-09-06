@@ -1,5 +1,4 @@
 import { render, RenderPosition } from '../framework/render';
-import NewEventButtonView from '../view/new-event-button-view.js';
 import InfoView from '../view/info-view.js';
 import FilterPresenter from './filter-presenter';
 
@@ -23,7 +22,6 @@ export default class GeneralTripManagementPresenter {
   #renderGeneralTripManagement() {
     this.#renderFilter();
     this.#renderInfo();
-    this.#renderNewEventButton();
   }
 
   #renderFilter() {
@@ -38,10 +36,6 @@ export default class GeneralTripManagementPresenter {
 
   #renderInfo() {
     render(new InfoView(), this.#tripMainElement, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderNewEventButton() {
-    render(new NewEventButtonView(), this.#tripMainElement);
   }
 }
 

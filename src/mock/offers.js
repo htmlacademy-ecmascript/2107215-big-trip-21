@@ -6,5 +6,4 @@ const generateMockOffers = (type) => ({
   price: getRandomInt(1, 100)
 });
 
-
 export {generateMockOffers};
