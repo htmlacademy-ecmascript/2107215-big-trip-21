@@ -7,20 +7,21 @@ const Mode = {
 };
 
 export default class NewPointPresenter {
-  #pointListContainer = null;
-  #handleDataChange = null;
-  #handleDestroy = null;
   #pointDestinations = null;
   #pointOffers = null;
 
+  #pointListContainer = null;
+  #handleDataChange = null;
+  #handleDestroy = null;
+
   #editPointComponent = null;
 
-  constructor({ pointListContainer, onDataChange, onDestroy, pointDestinations, pointOffers }) {
+  constructor({ pointDestinations, pointOffers, pointListContainer, onDataChange, onDestroy }) {
+    this.#pointDestinations = pointDestinations;
+    this.#pointOffers = pointOffers;
     this.#pointListContainer = pointListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
-    this.#pointDestinations = pointDestinations;
-    this.#pointOffers = pointOffers;
   }
 
   init() {

@@ -18,6 +18,7 @@ export default class BoardPresenter {
   #tripListComponent = new TripListView();
   #noPointComponent = null;
   #sortComponent = null;
+
   #pointPresenters = new Map();
   #newPointPresenter = null;
 
@@ -33,11 +34,11 @@ export default class BoardPresenter {
     this.#filterModel = filterModel;
 
     this.#newPointPresenter = new NewPointPresenter({
-      pointListContainer: this.#tripListComponent,
-      onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy,
       pointDestinations: destinationsModel,
       pointOffers: offersModel,
+      pointListContainer: this.#tripListComponent,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewPointDestroy
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -73,6 +74,7 @@ export default class BoardPresenter {
   }
 
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -175,9 +177,9 @@ export default class BoardPresenter {
 
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
-      tripListContainer: this.#tripListComponent,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
+      tripListContainer: this.#tripListComponent,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });

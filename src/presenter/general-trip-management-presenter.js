@@ -3,16 +3,17 @@ import InfoView from '../view/info-view.js';
 import FilterPresenter from './filter-presenter';
 
 export default class GeneralTripManagementPresenter {
-  #tripMainElement = null;
-  #tripFilterElement = null;
   #pointsModel = null;
   #filterModel = null;
 
-  constructor({ tripFilterElement, tripMainElement, pointsModel, filterModel }) {
-    this.#tripMainElement = tripMainElement;
-    this.#tripFilterElement = tripFilterElement;
+  #tripMainElement = null;
+  #tripFilterElement = null;
+
+  constructor({ pointsModel, filterModel, tripFilterElement, tripMainElement }) {
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#tripMainElement = tripMainElement;
+    this.#tripFilterElement = tripFilterElement;
   }
 
   init() {

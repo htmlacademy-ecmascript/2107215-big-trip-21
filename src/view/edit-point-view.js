@@ -1,3 +1,4 @@
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeDate, createToUpperCase } from '../utils/utils.js';
 import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
@@ -33,31 +34,6 @@ const createOfferElementTemplate = (offers, point) => {
   return offerElement;
 };
 
-const createDestinationElementTemplate = (destination) => {
-  const destinationElement = (!destination) ? '' :
-
-  `<section class="event__section  event__section--destination">
-    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${destination.description}</p>
-      <div class="event__photos-container">
-        ${createElementPictures(destination.pictures)}
-      </div>
-  </section>`
-  return destinationElement
-}
-
-const createDatalistElement = (destinations) => {
-  const datalistElement = (destinations.length === 0) ? ''
-  : destinations.map((item) =>
-    `<option value="${item.name}"></option>`).join('');
-
-  return `
-    <datalist id="destination-list-1">
-      ${datalistElement}
-    </datalist>
-  `
-}
-
 const createElementPictures = (pictures) =>
   `${(pictures) ?
     `<div class="event__photos-tape">
@@ -66,6 +42,32 @@ const createElementPictures = (pictures) =>
   ).join('')}
       </div>`
     : ''}`;
+
+const createDestinationElementTemplate = (destination) => {
+  const destinationElement = (!destination) ? '' :
+
+    `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${destination.description}</p>
+        <div class="event__photos-container">
+          ${createElementPictures(destination.pictures)}
+        </div>
+    </section>`;
+
+  return destinationElement;
+};
+
+const createDatalistElement = (destinations) => {
+  const datalistElement = (destinations.length === 0) ? ''
+    : destinations.map((item) =>
+      `<option value="${item.name}"></option>`).join('');
+
+  return `
+    <datalist id="destination-list-1">
+      ${datalistElement}
+    </datalist>
+  `;
+};
 
 const createTypesListTemplate = (offerTypes, type) => {
   const offerType = (offerTypes.length === 0) ? '' :
@@ -106,8 +108,8 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
   const currentDestination = pointDestinations.find((item) => item.id === destination);
 
   const valueDestination = (currentDestination)
-    ? `value="${currentDestination.name}"`
-    : `value=""`;
+    ? `${currentDestination.name}`
+    : '';
 
   return `
     <li class="trip-events__item">
@@ -123,8 +125,9 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
               event__input--destination"
               id="event-destination-1"
               type="text"
-              ${valueDestination}
+              value="${he.encode(valueDestination)}"
               name="event-destination"
+              autocomplete="off"
               list="destination-list-1"
               required
             >
@@ -139,7 +142,7 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
               id="event-start-time-1"
               type="text"
               name="event-start-time"
-              value="${humanizeDate(dateFrom, DATE_FORMAT.FULL_DATA)}"
+              value="${he.encode(humanizeDate(dateFrom, DATE_FORMAT.FULL_DATA))}"
               data-date-from
               required
             >
@@ -150,7 +153,7 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
               id="event-end-time-1"
               type="text"
               name="event-end-time"
-              value="${humanizeDate(dateTo, DATE_FORMAT.FULL_DATA)}"
+              value="${he.encode(humanizeDate(dateTo, DATE_FORMAT.FULL_DATA))}"
               data-date-to
               required
             >
@@ -168,6 +171,7 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
               id="event-price-1"
               name="event-price"
               value="${basePrice}"
+              autocomplete="off"
               required
             >
           </div>
@@ -176,10 +180,10 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
           <button class="event__reset-btn" type="reset">${(modeAddForm) ? 'Cancel' : 'Delete'}</button>
 
           ${(modeAddForm) ? ''
-          : `<button class="event__rollup-btn" type="button">
-              <span class="visually-hidden">Open event</span>
+    : `<button class="event__rollup-btn" type="button">
+               <span class="visually-hidden">Open event</span>
             </button>`
-          }
+}
         </header>
         <section class="event__details">
           ${createOfferElementTemplate(offersByType, point)}
@@ -205,7 +209,6 @@ export default class EditPointView extends AbstractStatefulView {
     this.#pointDestinations = pointDestinations;
     this.#pointOffers = pointOffers;
     this.#modeAddForm = mode;
-
     this._restoreHandlers();
 
     this.#handleFormSubmit = onFormSubmit;
@@ -377,4 +380,5 @@ export default class EditPointView extends AbstractStatefulView {
     return point;
   };
 }
+
 

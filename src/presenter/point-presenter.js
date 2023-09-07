@@ -1,7 +1,8 @@
 import { render, replace, remove } from '../framework/render';
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
-import {UserAction, UpdateType} from '../const.js';
+import { UserAction, UpdateType } from '../const.js';
+import { isDatesEqual } from '../utils/utils.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -9,9 +10,10 @@ const Mode = {
 };
 
 export default class PointPresenter {
-  #tripListContainer = null;
   #offersModel = null;
   #destinationsModel = null;
+
+  #tripListContainer = null;
   #handleDataChange = null;
   #handleModeChange = null;
 
@@ -21,10 +23,10 @@ export default class PointPresenter {
   #point = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ tripListContainer, offersModel, destinationsModel, onDataChange, onModeChange }) {
-    this.#tripListContainer = tripListContainer;
+  constructor({ offersModel, destinationsModel, tripListContainer, onDataChange, onModeChange }) {
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#tripListContainer = tripListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -106,13 +108,19 @@ export default class PointPresenter {
     }
   };
 
-  #handleFormSubmit = (point) => {
-    this.#replaceFormToItem();
+  #handleFormSubmit = (update) => {
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+    const isMinorUpdate =
+      !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
+      !isDatesEqual(this.#point.dateTo, update.dateTo);
+
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      UpdateType.PATCH,
-      point
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update
     );
+    this.#replaceFormToItem();
   };
 
   #handleCloseClick = () => {

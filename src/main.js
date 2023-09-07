@@ -26,11 +26,12 @@ const boardPresenter = new BoardPresenter({
   filterModel,
   onNewPointDestroy: handleNewPointFormClose
 });
+
 const generalTripManagementPresenter = new GeneralTripManagementPresenter({
-  tripFilterElement,
-  tripMainElement,
   pointsModel,
   filterModel,
+  tripFilterElement,
+  tripMainElement,
 });
 
 const newEventButtonComponent = new NewEventButtonView({
