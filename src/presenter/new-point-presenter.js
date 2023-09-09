@@ -2,9 +2,7 @@ import { remove, render, RenderPosition } from '../framework/render.js';
 import EditPointView from '../view/edit-point-view';
 import { UserAction, UpdateType } from '../const.js';
 
-const Mode = {
-  ADD_FORM: 'ADD_FORM',
-};
+const mode = 'add_form';
 
 export default class NewPointPresenter {
   #pointDestinations = null;
@@ -34,7 +32,7 @@ export default class NewPointPresenter {
       pointOffers: this.#pointOffers.offers,
       onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick,
-      mode: Mode.ADD_FORM,
+      mode: mode,
     });
 
     render(this.#editPointComponent, this.#pointListContainer.element, RenderPosition.AFTERBEGIN);
