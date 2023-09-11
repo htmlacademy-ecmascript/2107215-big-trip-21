@@ -91,6 +91,15 @@ const enabledSortType = {
   [SortType.OFFER]: false
 };
 
+const commonConfig = {
+  dateFormat: 'd/m/y H:i',
+  enableTime: true,
+  locale: {
+    firstDayOfWeek: 1,
+  },
+  'time_24hr': true
+};
+
 export {
   TYPEPOINTS,
   DATE_FORMAT,
@@ -104,5 +113,6 @@ export {
   SortType,
   enabledSortType,
   UserAction,
-  UpdateType
+  UpdateType,
+  commonConfig
 };

@@ -1,7 +1,7 @@
 import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeDate, createToUpperCase } from '../utils/utils.js';
-import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
+import { DATE_FORMAT, POINT_EMPTY, commonConfig } from '../const.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
@@ -100,7 +100,7 @@ const createTypesListTemplate = (offerTypes, type) => {
   `;
 };
 
-const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, pointOffers, modeAddForm }) => {
+const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, pointOffers, isNew }) => {
   const { dateFrom, dateTo, type, basePrice, destination } = point;
 
   const offersByType = pointOffers.find((item) => item.type === type).offers;
@@ -177,9 +177,9 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${(modeAddForm) ? 'Cancel' : 'Delete'}</button>
+          <button class="event__reset-btn" type="reset">${(isNew) ? 'Cancel' : 'Delete'}</button>
 
-          ${(modeAddForm) ? ''
+          ${(isNew) ? ''
     : `<button class="event__rollup-btn" type="button">
                <span class="visually-hidden">Open event</span>
             </button>`
@@ -202,14 +202,14 @@ export default class EditPointView extends AbstractStatefulView {
   #handleDeleteClick = null;
   #datepickerFrom = null;
   #datepickerTo = null;
-  #modeAddForm = null;
+  #isNew = false;
 
-  constructor({ point = POINT_EMPTY, pointDestinations, pointOffers, onFormSubmit, onCloseClick, onDeleteClick, mode }) {
+  constructor({ point = POINT_EMPTY, pointDestinations, pointOffers, onFormSubmit, onCloseClick, onDeleteClick, isNew }) {
     super();
     this._setState(EditPointView.parsePointToState(point));
     this.#pointDestinations = pointDestinations;
     this.#pointOffers = pointOffers;
-    this.#modeAddForm = mode;
+    this.#isNew = isNew;
     this._restoreHandlers();
 
     this.#handleFormSubmit = onFormSubmit;
@@ -222,7 +222,7 @@ export default class EditPointView extends AbstractStatefulView {
       point: this._state,
       pointDestinations: this.#pointDestinations,
       pointOffers: this.#pointOffers,
-      modeAddForm: this.#modeAddForm
+      isNew: this.#isNew
     });
   }
 
@@ -249,7 +249,7 @@ export default class EditPointView extends AbstractStatefulView {
   _restoreHandlers() {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
-    if (!this.#modeAddForm) {
+    if (!this.#isNew) {
       this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
     }
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#inputDestinationChangeHandler);
@@ -271,14 +271,6 @@ export default class EditPointView extends AbstractStatefulView {
   #setDatepicker() {
     const dateStartElement = this.element.querySelector('[data-date-from]');
     const dateEndElement = this.element.querySelector('[data-date-to]');
-    const commonConfig = {
-      dateFormat: 'd/m/y H:i',
-      enableTime: true,
-      locale: {
-        firstDayOfWeek: 1,
-      },
-      'time_24hr': true
-    };
 
     this.#datepickerFrom = flatpickr(
       dateStartElement,
@@ -358,7 +350,6 @@ export default class EditPointView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit(EditPointView.parseStateToPoint(this._state));
-    this.#modeAddForm = null;
   };
 
   #closeClickHandler = (evt) => {

@@ -106,7 +106,7 @@ export default class BoardPresenter {
       case UpdateType.MINOR:
         this.#clearBoard();
         this.#renderBoard();
-        // - обновить список (например, когда задача ушла в архив)
+        // - обновить список
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({resetSortType: true});

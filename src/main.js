@@ -7,6 +7,11 @@ import MockService from './service/mock-service.js';
 import FilterModel from './model/filter-model.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 import GeneralTripManagementPresenter from './presenter/general-trip-management-presenter.js';
+import PointsApiService from './points-api-service.js';
+import { makeid }  from './utils/utils.js';
+
+const AUTHORIZATION = `Basic ${makeid(16)}`;
+const END_POINT = 'https://21.objects.pages.academy/big-trip';
 
 const headerElement = document.querySelector('.page-header');
 const tripMainElement = headerElement.querySelector('.trip-main');
@@ -14,7 +19,13 @@ const tripFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventElement = document.querySelector('.trip-events');
 
 const mockService = new MockService();
-const pointsModel = new PointsModel(mockService);
+const pointsModel = new PointsModel(
+  mockService,
+  {
+    pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
+  }
+);
+// const pointsModel = new PointsModel(mockService);
 const offersModel = new OffersModel(mockService);
 const destinationsModel = new DestinationsModel(mockService);
 const filterModel = new FilterModel();
