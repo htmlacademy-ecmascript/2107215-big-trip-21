@@ -1,20 +1,19 @@
 import { render, RenderPosition } from '../framework/render';
-import NewEventButtonView from '../view/new-event-button-view.js';
 import InfoView from '../view/info-view.js';
-import FilterView from '../view/filter-view.js';
-import { generateFilter } from '../mock/filter.js';
+import FilterPresenter from './filter-presenter';
 
 export default class GeneralTripManagementPresenter {
+  #pointsModel = null;
+  #filterModel = null;
+
   #tripMainElement = null;
   #tripFilterElement = null;
-  #pointsModel = null;
-  #filters = [];
 
-  constructor({ tripFilterElement, tripMainElement, pointsModel }) {
+  constructor({ pointsModel, filterModel, tripFilterElement, tripMainElement }) {
+    this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
     this.#tripMainElement = tripMainElement;
     this.#tripFilterElement = tripFilterElement;
-    this.#pointsModel = pointsModel;
-    this.#filters = generateFilter(this.#pointsModel.points);
   }
 
   init() {
@@ -24,18 +23,20 @@ export default class GeneralTripManagementPresenter {
   #renderGeneralTripManagement() {
     this.#renderFilter();
     this.#renderInfo();
-    this.#renderNewEventButton();
   }
 
   #renderFilter() {
-    render(new FilterView({ filters: this.#filters }), this.#tripFilterElement);
+    const filterPresenter = new FilterPresenter({
+      filterContainer: this.#tripFilterElement,
+      filterModel: this.#filterModel,
+      pointsModel: this.#pointsModel,
+    });
+
+    filterPresenter.init();
   }
 
   #renderInfo() {
     render(new InfoView(), this.#tripMainElement, RenderPosition.AFTERBEGIN);
   }
-
-  #renderNewEventButton() {
-    render(new NewEventButtonView(), this.#tripMainElement);
-  }
 }
+

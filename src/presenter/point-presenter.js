@@ -1,6 +1,8 @@
 import { render, replace, remove } from '../framework/render';
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
+import { UserAction, UpdateType } from '../const.js';
+import { isDatesEqual } from '../utils/utils.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -8,9 +10,10 @@ const Mode = {
 };
 
 export default class PointPresenter {
-  #tripListContainer = null;
   #offersModel = null;
   #destinationsModel = null;
+
+  #tripListContainer = null;
   #handleDataChange = null;
   #handleModeChange = null;
 
@@ -19,15 +22,13 @@ export default class PointPresenter {
 
   #point = null;
   #mode = Mode.DEFAULT;
-  #handleDeletedDataChange = null;
 
-  constructor({ tripListContainer, offersModel, destinationsModel, onDataChange, onModeChange, onDeletedDataChange }) {
-    this.#tripListContainer = tripListContainer;
+  constructor({ offersModel, destinationsModel, tripListContainer, onDataChange, onModeChange }) {
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#tripListContainer = tripListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
-    this.#handleDeletedDataChange = onDeletedDataChange;
   }
 
   init(point) {
@@ -78,12 +79,12 @@ export default class PointPresenter {
   resetView() {
     if(this.#mode !== Mode.DEFAULT) {
       this.#resetPoint();
-      this.#replaceFormToItem();
     }
   }
 
   #resetPoint() {
     this.#editPointComponent.reset(this.#point);
+    this.#replaceFormToItem();
   }
 
   #replaceItemToForm() {
@@ -103,25 +104,36 @@ export default class PointPresenter {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       this.#resetPoint();
-      this.#replaceFormToItem();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
   };
 
-  #handleFormSubmit = (point) => {
+  #handleFormSubmit = (update) => {
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+    const isMinorUpdate =
+      !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
+      !isDatesEqual(this.#point.dateTo, update.dateTo);
+
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update
+    );
     this.#replaceFormToItem();
-    this.#handleDataChange(point);
   };
 
   #handleCloseClick = () => {
     this.#resetPoint();
-    this.#replaceFormToItem();
   };
 
-  #handleDeleteClick = () => {
+  #handleDeleteClick = (point) => {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-    remove(this.#editPointComponent);
-    this.#handleDeletedDataChange({...this.#point});
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 
   #handleOpenClick = () => {
@@ -129,6 +141,12 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      {
+        ...this.#point,
+        isFavorite: !this.#point.isFavorite
+      });
   };
 }
