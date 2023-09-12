@@ -23,14 +23,6 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
   const isDiffTime = dateDiff(dateFrom, dateTo);
   const dateEnd = humanizeDate(dateTo, DATE_FORMAT.HOUR_MINUTE);
   const dateMonth = humanizeDate(dateFrom, DATE_FORMAT.MONTH_DAY);
-  const getOffers = () => {
-    const currentOffers = [];
-    for (let i = 0; i <= point.offers.length - 1; i++) {
-      const itemOffer = pointOffer.offers.find((item) => item.id === point.offers[i]);
-      currentOffers.push(itemOffer);
-    }
-    return currentOffers;
-  };
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
@@ -56,7 +48,7 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-          ${createViewOffersList(getOffers())}
+          ${createViewOffersList(pointOffer)}
         <button class="${favoriteClassName}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -74,7 +66,7 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
 export default class PointView extends AbstractView {
   #point = null;
   #pointDestination = null;
-  #pointOffer = null;
+  #pointOffer = [];
   #handleOpenClick = null;
   #handleFavoriteClick = null;
 

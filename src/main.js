@@ -3,31 +3,29 @@ import BoardPresenter from './presenter/board-presenter.js';
 import PointsModel from './model/points-model.js';
 import OffersModel from './model/offers-model.js';
 import DestinationsModel from './model/destinations-model.js';
-import MockService from './service/mock-service.js';
 import FilterModel from './model/filter-model.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 import GeneralTripManagementPresenter from './presenter/general-trip-management-presenter.js';
 import PointsApiService from './points-api-service.js';
-import { makeid }  from './utils/utils.js';
-
-const AUTHORIZATION = `Basic ${makeid(16)}`;
-const END_POINT = 'https://21.objects.pages.academy/big-trip';
+import OffersApiService from './offers-api-service.js';
+import DestinationsApiService from './destinations-api-service.js';
+import { AUTHORIZATION, END_POINT } from './const.js';
 
 const headerElement = document.querySelector('.page-header');
 const tripMainElement = headerElement.querySelector('.trip-main');
 const tripFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventElement = document.querySelector('.trip-events');
 
-const mockService = new MockService();
-const pointsModel = new PointsModel(
-  mockService,
-  {
-    pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
-  }
-);
-// const pointsModel = new PointsModel(mockService);
-const offersModel = new OffersModel(mockService);
-const destinationsModel = new DestinationsModel(mockService);
+const pointsModel = new PointsModel({
+  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
+});
+
+const offersModel = new OffersModel({
+  offersApiService: new OffersApiService(END_POINT, AUTHORIZATION)
+});
+const destinationsModel = new DestinationsModel({
+  destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION)
+});
 const filterModel = new FilterModel();
 const boardPresenter = new BoardPresenter({
   boardContainer: tripEventElement,
@@ -58,9 +56,18 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-render(newEventButtonComponent, tripMainElement);
+offersModel.init()
+  .then(() => {
+    destinationsModel.init()
+      .then(() => {
+        pointsModel.init()
+          .finally(() => {
+            render(newEventButtonComponent, tripMainElement);
+        });
+      })
+  })
 
-boardPresenter.init();
 generalTripManagementPresenter.init();
+boardPresenter.init();
 
 

@@ -1,22 +1,6 @@
 import dayjs from 'dayjs';
-import { Duration } from '../const.js';
-import { getRandomInt } from '../utils/common.js';
 
-const getDate = ({next}) => {
-  let date = dayjs().subtract(getRandomInt(0, Duration.DAY), 'day').toDate();
-  const minsGap = getRandomInt(0, Duration.MIN);
-  const hoursGap = getRandomInt(0, Duration.HOUR);
-  const daysGap = getRandomInt(0, Duration.DAY);
-
-  if (next) {
-    date = dayjs()
-      .add(minsGap, 'minute')
-      .add(hoursGap, 'hour')
-      .subtract(daysGap, 'day').toDate();
-  }
-
-  return date;
-};
+const ALERT_SHOW_TIME = 5000;
 
 const humanizeDate = (date, dataFormat) =>
   date ? dayjs(date).format(dataFormat) : '';
@@ -70,4 +54,27 @@ const makeid = (length) => {
   return result;
 }
 
-export { getDate, humanizeDate, dateDiff, createToUpperCase, isDatesEqual, makeid};
+const showAlert = () => {
+  const alertMessage = document.createElement('div');
+  alertMessage.style.zIndex = '9999';
+  alertMessage.style.left = 0;
+  alertMessage.style.top = 0;
+  alertMessage.style.position = 'fixed';
+  alertMessage.style.paddingTop = '28px';
+  alertMessage.style.paddingBottom = '28px';
+  alertMessage.style.width = '100%';
+  alertMessage.style.backgroundColor = 'white';
+  alertMessage.style.borderRadius = '2px';
+  alertMessage.style.border = '3px solid #fd8871';
+  alertMessage.style.fontSize = '30px';
+  alertMessage.style.textAlign = 'center';
+  alertMessage.textContent = 'Ошибка при загрузке данных';
+  document.body.style.overflow = 'hidden';
+  document.body.append(alertMessage);
+
+  setTimeout(() => {
+    alertMessage.remove();
+  }, ALERT_SHOW_TIME);
+};
+
+export { humanizeDate, dateDiff, createToUpperCase, isDatesEqual, makeid, showAlert};
