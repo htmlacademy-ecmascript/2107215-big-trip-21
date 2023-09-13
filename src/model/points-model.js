@@ -37,7 +37,7 @@ export default class PointsModel extends Observable {
       const updatedPoint = this.#adaptToClient(response);
       this.#points = [
         ...this.#points.slice(0, index),
-        update,
+        updatedPoint,
         ...this.#points.slice(index + 1),
       ];
 
@@ -81,7 +81,7 @@ export default class PointsModel extends Observable {
   }
 
   #adaptToClient(point) {
-    const adaptedTask = {...point,
+    const adaptedPoint = {...point,
       dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'], // На клиенте дата хранится как экземпляр Date
       dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
       basePrice: point['base_price'],
@@ -89,11 +89,11 @@ export default class PointsModel extends Observable {
     };
 
     // Ненужные ключи мы удаляем
-    delete adaptedTask['date_from'];
-    delete adaptedTask['date_to'];
-    delete adaptedTask['base_price'];
-    delete adaptedTask['is_favorite'];
+    delete adaptedPoint['date_from'];
+    delete adaptedPoint['date_to'];
+    delete adaptedPoint['base_price'];
+    delete adaptedPoint['is_favorite'];
 
-    return adaptedTask;
+    return adaptedPoint;
   }
 }

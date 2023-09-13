@@ -69,6 +69,7 @@ export default class PointPresenter {
 
     if (this.#mode === Mode.EDITING) {
       replace(this.#editPointComponent, prevEditPointComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevEventPointComponent);
@@ -160,8 +161,6 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (update) => {
-    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
-    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
       !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
       !isDatesEqual(this.#point.dateTo, update.dateTo);
