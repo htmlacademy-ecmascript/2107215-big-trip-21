@@ -10,6 +10,7 @@ import PointsApiService from './points-api-service.js';
 import OffersApiService from './offers-api-service.js';
 import DestinationsApiService from './destinations-api-service.js';
 import { AUTHORIZATION, END_POINT } from './const.js';
+import { showAlert } from './utils/utils.js';
 
 const headerElement = document.querySelector('.page-header');
 const tripMainElement = headerElement.querySelector('.trip-main');
@@ -19,13 +20,13 @@ const tripEventElement = document.querySelector('.trip-events');
 const pointsModel = new PointsModel({
   pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
 });
-
 const offersModel = new OffersModel({
   offersApiService: new OffersApiService(END_POINT, AUTHORIZATION)
 });
 const destinationsModel = new DestinationsModel({
   destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION)
 });
+
 const filterModel = new FilterModel();
 const boardPresenter = new BoardPresenter({
   boardContainer: tripEventElement,
@@ -62,6 +63,9 @@ offersModel.init()
     pointsModel.init().finally(() => {
       render(newEventButtonComponent, tripMainElement);
     });
+  })
+  .catch(() => {
+    showAlert('Can\'t loading data. Try again later.');
   });
 
 generalTripManagementPresenter.init();

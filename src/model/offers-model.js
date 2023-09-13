@@ -1,5 +1,3 @@
-import { showAlert } from '../utils/utils.js';
-
 export default class OffersModel {
   #offersApiService = null;
   #offers = [];
@@ -17,7 +15,7 @@ export default class OffersModel {
       const offers = await this.#offersApiService.offers;
       this.#offers = offers;
     } catch(err) {
-      showAlert();
+      this.#offers = [];
       throw new Error('Can\'t loading offers');
     }
   }

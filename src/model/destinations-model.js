@@ -1,5 +1,3 @@
-import { showAlert } from '../utils/utils.js';
-
 export default class DestinationsModel {
   #destinationsApiService = null;
   #destinations = [];
@@ -17,7 +15,7 @@ export default class DestinationsModel {
       const destinations = await this.#destinationsApiService.destinations;
       this.#destinations = destinations;
     } catch(err) {
-      showAlert();
+      this.#destinations = [];
       throw new Error('Can\'t loading destinations');
     }
   }

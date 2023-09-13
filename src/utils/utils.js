@@ -54,7 +54,7 @@ const makeid = (length) => {
   return result;
 };
 
-const showAlert = () => {
+const showAlert = (message) => {
   const alertMessage = document.createElement('div');
   alertMessage.style.zIndex = '9999';
   alertMessage.style.left = 0;
@@ -68,7 +68,7 @@ const showAlert = () => {
   alertMessage.style.border = '3px solid #fd8871';
   alertMessage.style.fontSize = '30px';
   alertMessage.style.textAlign = 'center';
-  alertMessage.textContent = 'Ошибка при загрузке данных';
+  alertMessage.textContent = message;
   document.body.style.overflow = 'hidden';
   document.body.append(alertMessage);
 

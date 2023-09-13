@@ -49,6 +49,22 @@ export default class PointsApiService extends ApiService {
     return response;
   }
 
+  adaptToClient(point) {
+    const adaptedPoint = {...point,
+      dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'], // На клиенте дата хранится как экземпляр Date
+      dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
+      basePrice: point['base_price'],
+      isFavorite: point['is_favorite']
+    };
+
+    delete adaptedPoint['date_from'];
+    delete adaptedPoint['date_to'];
+    delete adaptedPoint['base_price'];
+    delete adaptedPoint['is_favorite'];
+
+    return adaptedPoint;
+  }
+
   #adaptToServer(point) {
     const adaptedPoint = {...point,
       'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
@@ -57,7 +73,6 @@ export default class PointsApiService extends ApiService {
       'is_favorite': point.isFavorite,
     };
 
-    // Ненужные ключи мы удаляем
     delete adaptedPoint.dateFrom;
     delete adaptedPoint.dateTo;
     delete adaptedPoint.basePrice;
