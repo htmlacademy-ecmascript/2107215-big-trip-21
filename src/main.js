@@ -57,15 +57,12 @@ function handleNewEventButtonClick() {
 }
 
 offersModel.init()
+  .then(() => destinationsModel.init())
   .then(() => {
-    destinationsModel.init()
-      .then(() => {
-        pointsModel.init()
-          .finally(() => {
-            render(newEventButtonComponent, tripMainElement);
-        });
-      })
-  })
+    pointsModel.init().finally(() => {
+      render(newEventButtonComponent, tripMainElement);
+    });
+  });
 
 generalTripManagementPresenter.init();
 boardPresenter.init();

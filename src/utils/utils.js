@@ -52,7 +52,7 @@ const makeid = (length) => {
     counter += 1;
   }
   return result;
-}
+};
 
 const showAlert = () => {
   const alertMessage = document.createElement('div');

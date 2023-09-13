@@ -53,13 +53,13 @@ const createDestinationElementTemplate = (destination) => {
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       ${destination.description ?
-         `<p class="event__destination-description">${destination.description}</p>`
-        : ''}
+    `<p class="event__destination-description">${destination.description}</p>`
+    : ''}
       ${destination.pictures ?
-        `<div class="event__photos-container">
+    `<div class="event__photos-container">
           ${createElementPictures(destination.pictures)}
         </div>`
-      : ''}
+    : ''}
     </section>`;
 
   return destinationElement;
@@ -109,7 +109,7 @@ const createTypesListTemplate = (offerTypes, type, isDisabled) => {
 };
 
 const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, pointOffers, isNew }) => {
-  const { dateFrom, dateTo, type, basePrice, destination, isDisabled, isSaving } = point;
+  const { dateFrom, dateTo, type, basePrice, destination, isDisabled, isSaving, isDeleting } = point;
 
   const offersByType = pointOffers.find((item) => item.type === type).offers;
 
@@ -118,6 +118,18 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
   const valueDestination = (currentDestination)
     ? `${currentDestination.name}`
     : '';
+
+  const getCurrentButton = () => {
+    if (isNew) {
+      return 'Cancel';
+    }
+
+    const isDelete = (isDeleting)
+      ? 'Deleting...'
+      : 'Delete';
+
+    return isDelete;
+  };
 
   return `
     <li class="trip-events__item">
@@ -188,11 +200,11 @@ const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, point
             >
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
             ${isSaving ? 'Saving...' : 'Save'}
           </button>
           <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
-            ${(isNew) ? 'Cancel' : 'Delete'}
+            ${getCurrentButton()}
           </button>
 
           ${(isNew) ? ''
@@ -392,13 +404,12 @@ export default class EditPointView extends AbstractStatefulView {
     this.#datepickerFrom.set('maxDate', this._state.dateTo);
   };
 
-  static parsePointToState = (point) => {
-    return {...point,
+  static parsePointToState = (point) =>
+    ({...point,
       isDisabled: false,
       isSaving: false,
       isDeleting: false
-    }
-  }
+    });
 
   static parseStateToPoint = (state) => {
     const point = {...state};

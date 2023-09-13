@@ -104,6 +104,23 @@ export default class PointPresenter {
     }
   }
 
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventPointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editPointComponent.shake(resetFormState);
+  }
+
   #getOffers = () => {
     const currentOffers = [];
 
@@ -154,7 +171,6 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update
     );
-    this.#replaceFormToItem();
   };
 
   #handleCloseClick = () => {

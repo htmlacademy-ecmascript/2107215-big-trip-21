@@ -1,4 +1,5 @@
 import { render, remove, RenderPosition } from '../framework/render';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
@@ -8,6 +9,11 @@ import NewPointPresenter from './new-point-presenter.js';
 import { sort } from '../utils/sort.js';
 import { filter } from '../utils/filter.js';
 import { SortType, enabledSortType, UpdateType, UserAction, FilterType } from '../const.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000
+};
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -27,6 +33,11 @@ export default class BoardPresenter {
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
+
 
   constructor({ boardContainer, pointsModel, offersModel, destinationsModel, filterModel, onNewPointDestroy }) {
     this.#boardContainer = boardContainer;
@@ -86,6 +97,8 @@ export default class BoardPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(update.id).setSaving();
@@ -112,6 +125,8 @@ export default class BoardPresenter {
         }
         break;
     }
+
+    this.#uiBlocker.unblock();
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
