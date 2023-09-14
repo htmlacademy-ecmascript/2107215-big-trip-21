@@ -21,6 +21,7 @@ export default class PointPresenter {
   #eventPointComponent = null;
 
   #point = null;
+  #typeOffer = null;
   #mode = Mode.DEFAULT;
 
   constructor({ offersModel, destinationsModel, tripListContainer, onDataChange, onModeChange }) {
@@ -33,26 +34,29 @@ export default class PointPresenter {
 
   init(point) {
     this.#point = point;
+    this.#typeOffer = this.#offersModel.getByType(this.#point.type);
 
     const prevEditPointComponent = this.#editPointComponent;
     const prevEventPointComponent = this.#eventPointComponent;
 
-    this.#editPointComponent = new EditPointView({
-      point: this.#point,
-      pointDestinations: this.#destinationsModel.destinations,
-      pointOffers: this.#offersModel.offers,
-      onFormSubmit: this.#handleFormSubmit,
-      onCloseClick: this.#handleCloseClick,
-      onDeleteClick: this.#handleDeleteClick,
-    });
+    if(this.#offersModel) {
+      this.#editPointComponent = new EditPointView({
+        point: this.#point,
+        pointDestinations: this.#destinationsModel.destinations,
+        pointOffers: this.#offersModel.offers,
+        onFormSubmit: this.#handleFormSubmit,
+        onCloseClick: this.#handleCloseClick,
+        onDeleteClick: this.#handleDeleteClick,
+      });
 
-    this.#eventPointComponent = new PointView({
-      point: this.#point,
-      pointDestination: this.#destinationsModel.getById(this.#point.destination),
-      pointOffer: this.#offersModel.getByType(this.#point.type),
-      onOpenClick: this.#handleOpenClick,
-      onFavoriteClick: this.#handleFavoriteClick
-    });
+      this.#eventPointComponent = new PointView({
+        point: this.#point,
+        pointDestination: this.#destinationsModel.getById(this.#point.destination),
+        pointOffer: this.#getOffers(),
+        onOpenClick: this.#handleOpenClick,
+        onFavoriteClick: this.#handleFavoriteClick
+      });
+    }
 
     if (prevEditPointComponent === null || prevEventPointComponent === null) {
       render(this.#eventPointComponent, this.#tripListContainer.element);
@@ -64,7 +68,8 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#editPointComponent, prevEditPointComponent);
+      replace(this.#eventPointComponent, prevEditPointComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevEventPointComponent);
@@ -81,6 +86,53 @@ export default class PointPresenter {
       this.#resetPoint();
     }
   }
+
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPointComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPointComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventPointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editPointComponent.shake(resetFormState);
+  }
+
+  #getOffers = () => {
+    const currentOffers = [];
+
+    if (this.#point.offers.length) {
+      for (let i = 0; i <= this.#point.offers.length - 1; i++) {
+        const itemOffer = this.#typeOffer.offers.find((item) => item.id === this.#point.offers[i]);
+        currentOffers.push(itemOffer);
+      }
+    }
+    return currentOffers;
+  };
 
   #resetPoint() {
     this.#editPointComponent.reset(this.#point);
@@ -109,8 +161,6 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (update) => {
-    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
-    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
       !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
       !isDatesEqual(this.#point.dateTo, update.dateTo);
@@ -120,7 +170,6 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update
     );
-    this.#replaceFormToItem();
   };
 
   #handleCloseClick = () => {

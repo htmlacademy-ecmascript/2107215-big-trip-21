@@ -1,56 +1,82 @@
 import Observable from '../framework/observable.js';
+import { UpdateType } from '../const.js';
 
 export default class PointsModel extends Observable {
-  #service = null;
-  #points = null;
+  #pointsApiService = null;
+  #points = [];
 
-  constructor(service) {
+  constructor({ pointsApiService }) {
     super();
-    this.#service = service;
-    this.#points = this.#service.getPoints();
+    this.#pointsApiService = pointsApiService;
   }
 
   get points() {
     return this.#points;
   }
 
-  updatePoint(updateType, update) {
+  async init() {
+    try {
+      const points = await this.#pointsApiService.points;
+      this.#points = points.map(this.#pointsApiService.adaptToClient);
+    } catch(err) {
+      this.#points = [];
+    }
+
+    this._notify(UpdateType.INIT);
+  }
+
+  async updatePoint(updateType, update) {
     const index = this.#points.findIndex((item) => item.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      update,
-      ...this.#points.slice(index + 1),
-    ];
+    try {
+      const response = await this.#pointsApiService.updatePoint(update);
+      const updatedPoint = this.#pointsApiService.adaptToClient(response);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        updatedPoint,
+        ...this.#points.slice(index + 1),
+      ];
 
-    this._notify(updateType, update);
+      this._notify(updateType, updatedPoint);
+    } catch(err) {
+      throw new Error('Can\'t update point');
+    }
   }
 
-  addPoint(updateType, update) {
-    this.#points = [
-      update,
-      ...this.#points,
-    ];
-
-    this._notify(updateType, update);
+  async addPoint(updateType, update) {
+    try {
+      const response = await this.#pointsApiService.addPoint(update);
+      const newPoint = this.#pointsApiService.adaptToClient(response);
+      this.#points = [newPoint, ...this.#points];
+      this._notify(updateType, newPoint);
+    } catch(err) {
+      throw new Error('Can\'t add point');
+    }
   }
 
-  deletePoint(updateType, update) {
+  async deletePoint(updateType, update) {
     const index = this.#points.findIndex((item) => item.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      ...this.#points.slice(index + 1),
-    ];
-
-    this._notify(updateType);
+    try {
+      // Обратите внимание, метод удаления задачи на сервере
+      // ничего не возвращает. Это и верно,
+      // ведь что можно вернуть при удалении задачи?
+      await this.#pointsApiService.deletePoint(update);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        ...this.#points.slice(index + 1),
+      ];
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete point');
+    }
   }
 }

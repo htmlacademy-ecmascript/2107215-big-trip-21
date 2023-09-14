@@ -1,36 +1,7 @@
-const CITIES = [
-  'Rubcovsk',
-  'Novosibirsk',
-  'Barnaul',
-  'Moscow',
-  'London',
-  'Rome',
-  'Saint-Petersburg'
-];
+import { makeid } from './utils/utils.js';
 
-const DESCRIPTION_PICTURES = [
-  'Lorem ipsum dolor sit amet.',
-  'Phasellus eros mauris.',
-  'In rutrum ac purus sit amet tempus.'
-];
-
-const DESCRIPTIONS = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.',
-  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis.',
-  'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.'
-];
-
-const TYPEPOINTS = [
-  'taxi',
-  'bus',
-  'train',
-  'ship',
-  'drive',
-  'flight',
-  'check-in',
-  'sightseeing',
-  'restaurant',
-];
+const END_POINT = 'https://21.objects.pages.academy/big-trip';
+const AUTHORIZATION = `Basic ${makeid(16)}`;
 
 const DATE_FORMAT = {
   FULL_DATA: 'DD/MM/YY HH:mm',
@@ -48,12 +19,6 @@ const POINT_EMPTY = {
   isFavorite: false,
   offers: [],
   type: DEFAULT_TYPE,
-};
-
-const Duration = {
-  MIN: 59,
-  DAY: 7,
-  HOUR: 23
 };
 
 const FilterType = {
@@ -81,6 +46,14 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  PLUG: 'PLUG',
+};
+
+const WebsiteAddress = {
+  POINTS: 'points',
+  OFFERS: 'offers',
+  DESTINATIONS: 'destinations',
 };
 
 const enabledSortType = {
@@ -91,18 +64,26 @@ const enabledSortType = {
   [SortType.OFFER]: false
 };
 
+const commonConfig = {
+  dateFormat: 'd/m/y H:i',
+  enableTime: true,
+  locale: {
+    firstDayOfWeek: 1,
+  },
+  'time_24hr': true
+};
+
 export {
-  TYPEPOINTS,
+  END_POINT,
+  AUTHORIZATION,
   DATE_FORMAT,
   DEFAULT_TYPE,
-  CITIES,
-  DESCRIPTIONS,
   POINT_EMPTY,
-  DESCRIPTION_PICTURES,
-  Duration,
   FilterType,
   SortType,
   enabledSortType,
   UserAction,
-  UpdateType
+  UpdateType,
+  commonConfig,
+  WebsiteAddress
 };
