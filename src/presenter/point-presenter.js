@@ -131,6 +131,7 @@ export default class PointPresenter {
         currentOffers.push(itemOffer);
       }
     }
+
     return currentOffers;
   };
 

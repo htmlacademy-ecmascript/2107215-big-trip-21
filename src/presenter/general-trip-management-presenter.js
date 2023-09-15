@@ -9,20 +9,28 @@ export default class GeneralTripManagementPresenter {
   #pointsModel = null;
   #filterModel = null;
   #destinationsModel = null;
+  #offersModel = null;
   #infoComponent = null;
   #tripMainElement = null;
   #tripFilterElement = null;
 
-  #isManyPoints = false;
+  #isSmallPoints = false;
 
-  constructor({ pointsModel, filterModel, tripFilterElement, tripMainElement, destinationsModel }) {
+  constructor({ pointsModel, filterModel, tripFilterElement, tripMainElement, destinationsModel, offersModel }) {
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
     this.#tripMainElement = tripMainElement;
     this.#tripFilterElement = tripFilterElement;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+  }
+
+  get points () {
+    const sortedPoints = sort[SortType.DAY](this.#pointsModel.points);
+
+    return sortedPoints;
   }
 
   init() {
@@ -58,42 +66,69 @@ export default class GeneralTripManagementPresenter {
   #renderInfo() {
     this.#infoComponent = new InfoView({
       travelPoints: this.#getTravelPoints(),
-      isManyPoints: this.#isManyPoints
+      isSmallPoints: this.#isSmallPoints,
+      userPrice: this.#getUserPrice()
     });
     render(this.#infoComponent, this.#tripMainElement, RenderPosition.AFTERBEGIN);
   }
 
-  #getTravelPoints () {
-    const points = this.#pointsModel.points;
-    const sortedPoints = sort[SortType.DAY](points);
+  #getUserPrice () {
+    if (this.points.length) {
+      const sum = this.points.reduce((acc, item) => acc + item.basePrice, 0);
 
-    const point = [];
-    const destination = [];
+      const offers = [];
+
+      for (let i = 0; i <= this.points.length - 1; i++) {
+        if (this.points[i].offers.length) {
+          for(let j = 0; j <= this.points[i].offers.length - 1; j++) {
+            const typeOffer = this.#offersModel.getByType(this.points[i].type);
+            const itemOffer = typeOffer.offers.find((item) => item.id === this.points[i].offers[j]);
+            offers.push(itemOffer);
+          }
+        }
+      }
+
+      const userPrice = offers.reduce((acc, item) => acc + item.price, sum);
+
+      return userPrice;
+    }
+  }
+
+  #getTravelPoints () {
+    const points = [];
+    const destinations = [];
 
     const infoPoints = {
-      points: point,
-      destinations: destination,
-    }
+      points: points,
+      destinations: destinations,
+    };
 
-    for(let i = 0; i <= sortedPoints.length - 1; i++) {
-      const currentPoint = sortedPoints[i];
-      if (i === 0 && i !== sortedPoints.length - 1) {
-        const currentDestination = this.#destinationsModel.getById(sortedPoints[0].destination);
-        point.push(currentPoint);
-        destination.push(currentDestination);
+    for(let i = 0; i <= this.points.length - 1; i++) {
+      const currentPoint = this.points[i];
+      if (i === 0) {
+        const currentDestination = this.#destinationsModel.getById(this.points[0].destination);
+        points.push(currentPoint);
+        destinations.push(currentDestination);
       }
 
-      if (sortedPoints.length < 3) {
-        this.#isManyPoints = false;
+      if (this.points.length <= 3) {
+        this.#isSmallPoints = true;
       } else {
-        this.#isManyPoints = true;
+        this.#isSmallPoints = false;
       }
 
-      if (i === sortedPoints.length - 1) {
+      if (i === 1 && i !== this.points.length - 1) {
         const currentDestination = this.#destinationsModel.getById(currentPoint.destination);
-        point.push(currentPoint);
-        destination.push(currentDestination);
+        points.push(currentPoint);
+        destinations.push(currentDestination);
       }
+
+      if (i === this.points.length - 1 && i !== 0) {
+        const currentDestination = this.#destinationsModel.getById(currentPoint.destination);
+        points.push(currentPoint);
+        destinations.push(currentDestination);
+      }
+
     }
 
     return infoPoints;

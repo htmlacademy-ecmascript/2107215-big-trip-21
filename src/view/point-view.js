@@ -28,8 +28,8 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
     ? 'event__favorite-btn event__favorite-btn--active'
     : 'event__favorite-btn';
 
-  return (
-    `<li class="trip-events__item">
+  return `
+    <li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="${dateFrom}">${dateMonth}</time>
         <div class="event__type">
@@ -59,8 +59,8 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
-    </li>`
-  );
+    </li>
+  `;
 };
 
 export default class PointView extends AbstractView {

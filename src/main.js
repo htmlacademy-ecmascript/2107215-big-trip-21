@@ -42,7 +42,8 @@ const generalTripManagementPresenter = new GeneralTripManagementPresenter({
   filterModel,
   tripFilterElement,
   tripMainElement,
-  destinationsModel
+  destinationsModel,
+  offersModel,
 });
 
 const newEventButtonComponent = new NewEventButtonView({
@@ -60,13 +61,11 @@ function handleNewEventButtonClick() {
 
 Promise.all([offersModel.init(), destinationsModel.init()])
   .then(() => pointsModel.init().finally(() => {
-      render(newEventButtonComponent, tripMainElement);
-    }))
+    render(newEventButtonComponent, tripMainElement);
+  }))
   .then(() => generalTripManagementPresenter.init())
   .catch(() => {
     showAlert('Can\'t loading data. Try again later.');
-  })
+  });
 
 boardPresenter.init();
-
-

@@ -2,44 +2,55 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDate } from '../utils/utils.js';
 import { DATE_FORMAT } from '../const.js';
 
-const createInfoTemplate = (travelPoints, manyPoints) => {
+const createInfoTemplate = (travelPoints, smallPoints, userPrice) => {
   const { destinations, points } = travelPoints;
+
+  if(!smallPoints) {
+    destinations.splice(1, 1);
+  }
 
   const titlePoints = destinations.length ?
     destinations.map((item, index) => {
-      let separator = '&mdash;';
-      if (manyPoints) {
-        separator = '...';
+      if (destinations.length === 3 && index !== destinations.length - 1) {
+        return `${item.name} &mdash; `;
       }
 
-      if(index !== destinations.length - 1) {
-        return `${item.name} ${separator} `;
+      if (index === 0 && smallPoints && destinations.length === 2) {
+        return `${item.name} &mdash; `;
       }
 
-      return item.name;
+      if(index !== destinations.length - 1 && !smallPoints && destinations.length === 2) {
+        return `${item.name} &mdash; ... &mdash; `;
+      }
+
+      return `${item.name}`;
 
     }).join('')
     : '';
 
-const getDateInfo = () => {
-  if (points.length === 1) {
+  const getDateInfo = () => {
+    if(points.length === 3) {
+      points.splice(1, 1);
+    }
+
+    if (points.length === 1) {
       const dateA = humanizeDate(points[0].dateFrom, DATE_FORMAT.MONTH_DAY);
       const dateB = humanizeDate(points[0].dateTo, DATE_FORMAT.MONTH_DAY);
 
-    return `${dateA} &mdash; ${dateB}`;
-  }
+      return `${dateA} &mdash; ${dateB}`;
+    }
 
-  const datesPoints = points.length ?
+    const datesPoints = points.length ?
       points.map((item, index) => {
         if(index === points.length - 1) {
-          return `${humanizeDate(item.dateTo, DATE_FORMAT.MONTH_DAY)}`
+          return `${humanizeDate(item.dateTo, DATE_FORMAT.MONTH_DAY)}`;
         }
         return `${humanizeDate(item.dateFrom, DATE_FORMAT.MONTH_DAY)} &mdash; `;
       }).join('')
       : '';
 
-  return datesPoints;
-}
+    return datesPoints;
+  };
 
   return `
     <section class="trip-main__trip-info  trip-info">
@@ -49,22 +60,25 @@ const getDateInfo = () => {
       </div>
       <p class="trip-info__cost">
         Total: &euro;&nbsp;
-        <span class="trip-info__cost-value">1230</span>
+        <span class="trip-info__cost-value">${userPrice ? userPrice : '0'}</span>
       </p>
     </section>
   `;
-}
+};
 
 export default class InfoView extends AbstractView {
   #travelPoints = [];
-  #isManyPoints = false;
+  #isSmallPoints = false;
+  #userPrice = null;
 
-  constructor({ travelPoints, isManyPoints }) {
+  constructor({ travelPoints, isSmallPoints, userPrice }) {
     super();
     this.#travelPoints = travelPoints;
-    this.#isManyPoints = isManyPoints;
+    this.#isSmallPoints = isSmallPoints;
+    this.#userPrice = userPrice;
   }
+
   get template() {
-    return createInfoTemplate(this.#travelPoints,  this.#isManyPoints);
+    return createInfoTemplate(this.#travelPoints, this.#isSmallPoints, this.#userPrice);
   }
 }
