@@ -42,6 +42,7 @@ const generalTripManagementPresenter = new GeneralTripManagementPresenter({
   filterModel,
   tripFilterElement,
   tripMainElement,
+  destinationsModel
 });
 
 const newEventButtonComponent = new NewEventButtonView({
@@ -57,18 +58,15 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-offersModel.init()
-  .then(() => destinationsModel.init())
-  .then(() => {
-    pointsModel.init().finally(() => {
+Promise.all([offersModel.init(), destinationsModel.init()])
+  .then(() => pointsModel.init().finally(() => {
       render(newEventButtonComponent, tripMainElement);
-    });
-  })
+    }))
+  .then(() => generalTripManagementPresenter.init())
   .catch(() => {
     showAlert('Can\'t loading data. Try again later.');
-  });
+  })
 
-generalTripManagementPresenter.init();
 boardPresenter.init();
 
 
