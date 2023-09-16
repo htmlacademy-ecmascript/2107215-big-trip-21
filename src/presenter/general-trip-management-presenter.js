@@ -53,7 +53,7 @@ export default class GeneralTripManagementPresenter {
 
   #renderNewEventButton() {
     this.#newEventButtonComponent = new NewEventButtonView({
-      onClick: this.handleNewEventButtonClick,
+      onButtonClick: this.handleNewEventButtonClick,
     });
 
     render(this.#newEventButtonComponent, this.#tripMainElement);
@@ -135,7 +135,7 @@ export default class GeneralTripManagementPresenter {
     for(let i = 0; i <= this.points.length - 1; i++) {
       const currentPoint = this.points[i];
       if (i === 0) {
-        const currentDestination = this.#destinationsModel.getById(this.points[0].destination);
+        const currentDestination = this.#destinationsModel.getById(currentPoint.destination);
         points.push(currentPoint);
         destinations.push(currentDestination);
       }

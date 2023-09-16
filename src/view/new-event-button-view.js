@@ -6,20 +6,20 @@ const createNewEventButtonTemplate = () =>
   `;
 
 export default class NewEventButtonView extends AbstractView {
-  #handleClick = null;
+  #handleButtonClick = null;
 
-  constructor({onClick}) {
+  constructor({onButtonClick}) {
     super();
-    this.#handleClick = onClick;
-    this.element.addEventListener('click', this.#clickHandler);
+    this.#handleButtonClick = onButtonClick;
+    this.element.addEventListener('click', this.#buttonClickHandler);
   }
 
   get template() {
     return createNewEventButtonTemplate();
   }
 
-  #clickHandler = (evt) => {
+  #buttonClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleClick();
+    this.#handleButtonClick();
   };
 }
