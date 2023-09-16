@@ -58,10 +58,12 @@ const createInfoTemplate = (travelPoints, smallPoints, userPrice) => {
         <h1 class="trip-info__title">${titlePoints}</h1>
           <p class="trip-info__dates">${getDateInfo()}</p>
       </div>
-      <p class="trip-info__cost">
+      ${userPrice ?
+    `<p class="trip-info__cost">
         Total: &euro;&nbsp;
-        <span class="trip-info__cost-value">${userPrice ? userPrice : '0'}</span>
-      </p>
+        <span class="trip-info__cost-value"> ${userPrice}</span>
+      </p>`
+    : ''}
     </section>
   `;
 };

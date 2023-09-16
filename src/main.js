@@ -49,7 +49,9 @@ const generalTripManagementPresenter = new GeneralTripManagementPresenter({
 
 Promise.all([offersModel.init(), destinationsModel.init()])
   .then(() => pointsModel.init())
-  .then(() => generalTripManagementPresenter.init())
+  .then(() => {
+    generalTripManagementPresenter.init();
+  })
   .catch(() => {
     showAlert('Can\'t loading data. Try again later.');
   });

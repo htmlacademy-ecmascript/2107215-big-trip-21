@@ -55,7 +55,7 @@ const createDestinationElementTemplate = (destination) => {
       ${destination.description ?
     `<p class="event__destination-description">${destination.description}</p>`
     : ''}
-      ${destination.pictures ?
+      ${destination.pictures.length ?
     `<div class="event__photos-container">
           ${createElementPictures(destination.pictures)}
         </div>`
