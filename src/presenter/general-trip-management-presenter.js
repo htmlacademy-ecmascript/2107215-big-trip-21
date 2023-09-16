@@ -157,7 +157,6 @@ export default class GeneralTripManagementPresenter {
         points.push(currentPoint);
         destinations.push(currentDestination);
       }
-
     }
 
     return infoPoints;
