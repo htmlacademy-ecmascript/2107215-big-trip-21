@@ -1,28 +1,37 @@
-import { render, RenderPosition, remove } from '../framework/render';
+import {render, RenderPosition, remove} from '../framework/render';
 import InfoView from '../view/info-view.js';
 import FilterPresenter from './filter-presenter';
-import { UpdateType } from '../const.js';
-import { SortType } from '../const.js';
-import { sort } from '../utils/sort.js';
+import NewEventButtonView from '../view/new-event-button-view.js';
+import {UpdateType} from '../const.js';
+import {SortType} from '../const.js';
+import {sort} from '../utils/sort.js';
 
 export default class GeneralTripManagementPresenter {
   #pointsModel = null;
   #filterModel = null;
   #destinationsModel = null;
+  #newEventButtonModel = null;
   #offersModel = null;
+
   #infoComponent = null;
+  #newEventButtonComponent = null;
+
   #tripMainElement = null;
   #tripFilterElement = null;
 
   #isSmallPoints = false;
 
-  constructor({ pointsModel, filterModel, tripFilterElement, tripMainElement, destinationsModel, offersModel }) {
+  constructor({pointsModel, filterModel, tripFilterElement, tripMainElement, destinationsModel, offersModel, newEventButtonModel}) {
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#destinationsModel = destinationsModel;
+    this.#newEventButtonModel = newEventButtonModel;
     this.#offersModel = offersModel;
+
     this.#tripMainElement = tripMainElement;
     this.#tripFilterElement = tripFilterElement;
+
+    this.#newEventButtonModel.addObserver(this.#handleModelNewEventButton);
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -39,7 +48,27 @@ export default class GeneralTripManagementPresenter {
 
   #renderGeneralTripManagement() {
     this.#renderFilter();
+    this.#renderNewEventButton();
   }
+
+  #renderNewEventButton() {
+    this.#newEventButtonComponent = new NewEventButtonView({
+      onClick: this.handleNewEventButtonClick,
+    });
+
+    render(this.#newEventButtonComponent, this.#tripMainElement);
+  }
+
+  #handleModelNewEventButton = (creating) => {
+    if (!creating) {
+      this.#newEventButtonComponent.element.disabled = false;
+    }
+  };
+
+  handleNewEventButtonClick = () => {
+    this.#newEventButtonModel.startCreating(true);
+    this.#newEventButtonComponent.element.disabled = true;
+  };
 
   #renderFilter() {
     const filterPresenter = new FilterPresenter({

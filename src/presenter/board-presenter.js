@@ -1,4 +1,4 @@
-import { render, remove, RenderPosition } from '../framework/render';
+import {render, remove, RenderPosition} from '../framework/render';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
@@ -6,9 +6,9 @@ import NoPointView from '../view/no-point-view.js';
 import LoadingView from '../view/loading-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
-import { sort } from '../utils/sort.js';
-import { filter } from '../utils/filter.js';
-import { SortType, enabledSortType, UpdateType, UserAction, FilterType } from '../const.js';
+import {sort} from '../utils/sort.js';
+import {filter} from '../utils/filter.js';
+import {SortType, enabledSortType, UpdateType, UserAction, FilterType} from '../const.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -21,6 +21,7 @@ export default class BoardPresenter {
   #offersModel = null;
   #destinationsModel = null;
   #filterModel = null;
+  #newEventButtonModel = null;
 
   #tripListComponent = new TripListView();
   #loadingComponent = new LoadingView();
@@ -33,26 +34,28 @@ export default class BoardPresenter {
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
+  #isCreating = false;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({ boardContainer, pointsModel, offersModel, destinationsModel, filterModel, onNewPointDestroy }) {
+  constructor({boardContainer, pointsModel, offersModel, destinationsModel, filterModel, newEventButtonModel}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#filterModel = filterModel;
+    this.#newEventButtonModel = newEventButtonModel;
 
     this.#newPointPresenter = new NewPointPresenter({
       pointDestinations: destinationsModel,
       pointOffers: offersModel,
       pointListContainer: this.#tripListComponent,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy
+      onDestroy: this.#newPointDestroyHandler
     });
-
+    this.#newEventButtonModel.addObserver(this.#handleModelNewEventButton);
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -62,21 +65,25 @@ export default class BoardPresenter {
     const points = this.#pointsModel.points;
     const filteredPoints = filter[this.#filterType](points);
 
-    if (this.#currentSortType) {
-      return sort[this.#currentSortType](filteredPoints);
-    }
-    return filteredPoints;
+    return sort[this.#currentSortType](filteredPoints);
   }
 
   init() {
     this.#renderBoard();
   }
 
-  createPoint() {
+  #createPoint () {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
   }
+
+  #handleModelNewEventButton = (creating) => {
+    if (creating) {
+      this.#isCreating = true;
+      this.#createPoint();
+    }
+  };
 
   #renderBoard() {
     if (this.#isLoading) {
@@ -84,9 +91,13 @@ export default class BoardPresenter {
       return;
     }
 
+    if (this.points.length === 0 && !this.#isCreating) {
+      this.#renderNoPointList();
+      return;
+    }
+
     this.#renderSort();
     render(this.#tripListComponent, this.#boardContainer);
-    this.#renderNoPointList();
     this.#renderPointList();
   }
 
@@ -203,14 +214,22 @@ export default class BoardPresenter {
   }
 
   #renderNoPointList() {
-    if (this.points.length === 0) {
-      this.#noPointComponent = new NoPointView({
-        filterType: this.#filterType
-      });
+    this.#noPointComponent = new NoPointView({
+      filterType: this.#filterType
+    });
 
-      render(this.#noPointComponent, this.#boardContainer);
-    }
+    render(this.#noPointComponent, this.#boardContainer);
   }
+
+  #newPointDestroyHandler = ({isCanceled}) => {
+    this.#isCreating = false;
+    this.#newEventButtonModel.startCreating(false);
+
+    if(this.points.length === 0 && isCanceled) {
+      this.#clearBoard();
+      this.#renderBoard();
+    }
+  };
 
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({

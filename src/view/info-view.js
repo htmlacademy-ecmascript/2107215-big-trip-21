@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeDate } from '../utils/utils.js';
-import { DATE_FORMAT } from '../const.js';
+import {humanizeDate} from '../utils/utils.js';
+import {DATE_FORMAT} from '../const.js';
 
 const createInfoTemplate = (travelPoints, smallPoints, userPrice) => {
   const { destinations, points } = travelPoints;

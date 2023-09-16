@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { FilterType } from '../const';
+import {FilterType} from '../const';
 
 const filter = {
   [FilterType.EVERYTHING]: (points) => [...points],
@@ -8,4 +8,4 @@ const filter = {
   [FilterType.PRESENT]: (points) => points.filter((item) => dayjs(item.dateFrom).isSame(dayjs())),
 };
 
-export { filter };
+export {filter};

@@ -1,6 +1,6 @@
-import { remove, render, RenderPosition } from '../framework/render.js';
+import {remove, render, RenderPosition} from '../framework/render.js';
 import EditPointView from '../view/edit-point-view';
-import { UserAction, UpdateType } from '../const.js';
+import {UserAction, UpdateType} from '../const.js';
 
 export default class NewPointPresenter {
   #pointDestinations = null;
@@ -12,7 +12,7 @@ export default class NewPointPresenter {
 
   #editPointComponent = null;
 
-  constructor({ pointDestinations, pointOffers, pointListContainer, onDataChange, onDestroy }) {
+  constructor({pointDestinations, pointOffers, pointListContainer, onDataChange, onDestroy}) {
     this.#pointDestinations = pointDestinations;
     this.#pointOffers = pointOffers;
     this.#pointListContainer = pointListContainer;
@@ -29,7 +29,7 @@ export default class NewPointPresenter {
       pointDestinations: this.#pointDestinations.destinations,
       pointOffers: this.#pointOffers.offers,
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick,
+      onResetClick: this.#handleResetClick,
       isNew: true,
     });
 
@@ -38,18 +38,17 @@ export default class NewPointPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  destroy() {
+  destroy = ({isCanceled = true} = {}) => {
     if (this.#editPointComponent === null) {
       return;
     }
 
-    this.#handleDestroy();
-
     remove(this.#editPointComponent);
     this.#editPointComponent = null;
-
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-  }
+
+    this.#handleDestroy({isCanceled});
+  };
 
   setSaving() {
     this.#editPointComponent.updateElement({
@@ -78,7 +77,7 @@ export default class NewPointPresenter {
     );
   };
 
-  #handleDeleteClick = () => {
+  #handleResetClick = () => {
     this.destroy();
   };
 

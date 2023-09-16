@@ -1,7 +1,7 @@
 import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { humanizeDate, createToUpperCase } from '../utils/utils.js';
-import { DATE_FORMAT, POINT_EMPTY, commonConfig, END_POINT } from '../const.js';
+import {humanizeDate, createToUpperCase} from '../utils/utils.js';
+import {DATE_FORMAT, POINT_EMPTY, commonConfig, END_POINT} from '../const.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
@@ -108,8 +108,8 @@ const createTypesListTemplate = (offerTypes, type, isDisabled) => {
   `;
 };
 
-const createPointEditTemplate = ({ point = POINT_EMPTY, pointDestinations, pointOffers, isNew }) => {
-  const { dateFrom, dateTo, type, basePrice, destination, isDisabled, isSaving, isDeleting } = point;
+const createPointEditTemplate = ({point = POINT_EMPTY, pointDestinations, pointOffers, isNew}) => {
+  const {dateFrom, dateTo, type, basePrice, destination, isDisabled, isSaving, isDeleting} = point;
 
   const offersByType = pointOffers.find((item) => item.type === type).offers;
 
@@ -230,9 +230,10 @@ export default class EditPointView extends AbstractStatefulView {
   #handleDeleteClick = null;
   #datepickerFrom = null;
   #datepickerTo = null;
+  #handleResetClick = null;
   #isNew = false;
 
-  constructor({ point = POINT_EMPTY, pointDestinations, pointOffers, onFormSubmit, onCloseClick, onDeleteClick, isNew }) {
+  constructor({point = POINT_EMPTY, pointDestinations, pointOffers, onFormSubmit, onCloseClick, onDeleteClick, onResetClick, isNew}) {
     super();
     this._setState(EditPointView.parsePointToState(point));
     this.#pointDestinations = pointDestinations;
@@ -243,6 +244,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
     this.#handleDeleteClick = onDeleteClick;
+    this.#handleResetClick = onResetClick;
   }
 
   get template() {
@@ -276,9 +278,13 @@ export default class EditPointView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+
+    if (this.#isNew) {
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#resetClickHandler);
+    }
 
     if (!this.#isNew) {
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
       this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
     }
 
@@ -390,6 +396,11 @@ export default class EditPointView extends AbstractStatefulView {
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleDeleteClick(EditPointView.parseStateToPoint(this._state));
+  };
+
+  #resetClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleResetClick();
   };
 
   #dateFromCloseHandler = ([userDate]) => {

@@ -1,5 +1,5 @@
-import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
-import { humanizeDate, dateDiff } from '../utils/utils.js';
+import {DATE_FORMAT, POINT_EMPTY} from '../const.js';
+import {humanizeDate, dateDiff} from '../utils/utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createViewOffersList = (offers) =>
@@ -16,8 +16,8 @@ const createViewOffersList = (offers) =>
     </ul>
   `;
 
-const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer }) => {
-  const { dateFrom, dateTo, type, basePrice, isFavorite } = point;
+const createPointTemplate = ({point = POINT_EMPTY, pointDestination, pointOffer}) => {
+  const {dateFrom, dateTo, type, basePrice, isFavorite} = point;
 
   const dateStart = humanizeDate(dateFrom, DATE_FORMAT.HOUR_MINUTE);
   const isDiffTime = dateDiff(dateFrom, dateTo);

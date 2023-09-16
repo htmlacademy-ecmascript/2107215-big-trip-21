@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { SortType } from '../const.js';
+import {SortType} from '../const.js';
 
 const sortPointsByTime = (pointA, pointB) => {
   const durationPointA = dayjs(pointA.dateTo).valueOf() - dayjs(pointA.dateFrom).valueOf();
@@ -30,4 +30,4 @@ const sort = {
   }
 };
 
-export { sort };
+export {sort};

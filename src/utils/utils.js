@@ -35,7 +35,7 @@ const dateDiff = (date1, date2) => {
 const createToUpperCase = (word) =>
   word.charAt(0).toUpperCase() + word.slice(1);
 
-const isDatesEqual = (dateA, dateB) => {
+const isDatasEqual = (dateA, dateB) => {
   const pointDateA = dayjs(dateA).valueOf();
   const pointDateB = dayjs(dateB).valueOf();
 
@@ -77,4 +77,4 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-export { humanizeDate, dateDiff, createToUpperCase, isDatesEqual, makeid, showAlert};
+export {humanizeDate, dateDiff, createToUpperCase, isDatasEqual, makeid, showAlert};
