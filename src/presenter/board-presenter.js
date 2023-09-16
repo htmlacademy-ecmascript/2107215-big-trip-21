@@ -221,11 +221,11 @@ export default class BoardPresenter {
     render(this.#noPointComponent, this.#boardContainer);
   }
 
-  #newPointDestroyHandler = ({isCanceled}) => {
+  #newPointDestroyHandler = () => {
     this.#isCreating = false;
     this.#newEventButtonModel.startCreating(false);
 
-    if(this.points.length === 0 && isCanceled) {
+    if (this.points.length === 0) {
       this.#clearBoard();
       this.#renderBoard();
     }

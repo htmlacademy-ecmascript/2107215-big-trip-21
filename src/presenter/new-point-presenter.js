@@ -38,7 +38,7 @@ export default class NewPointPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  destroy = ({isCanceled = true} = {}) => {
+  destroy = () => {
     if (this.#editPointComponent === null) {
       return;
     }
@@ -47,7 +47,7 @@ export default class NewPointPresenter {
     this.#editPointComponent = null;
     document.removeEventListener('keydown', this.#escKeyDownHandler);
 
-    this.#handleDestroy({isCanceled});
+    this.#handleDestroy();
   };
 
   setSaving() {
