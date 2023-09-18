@@ -1,16 +1,15 @@
-import { render } from './framework/render.js';
 import BoardPresenter from './presenter/board-presenter.js';
 import PointsModel from './model/points-model.js';
 import OffersModel from './model/offers-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import FilterModel from './model/filter-model.js';
-import NewEventButtonView from './view/new-event-button-view.js';
+import NewEventButtonModel from './model/new-event-button-model.js';
 import GeneralTripManagementPresenter from './presenter/general-trip-management-presenter.js';
 import PointsApiService from './points-api-service.js';
 import OffersApiService from './offers-api-service.js';
 import DestinationsApiService from './destinations-api-service.js';
-import { AUTHORIZATION, END_POINT } from './const.js';
-import { showAlert } from './utils/utils.js';
+import {AUTHORIZATION, END_POINT} from './const.js';
+import {showAlert} from './utils/utils.js';
 
 const headerElement = document.querySelector('.page-header');
 const tripMainElement = headerElement.querySelector('.trip-main');
@@ -27,6 +26,7 @@ const destinationsModel = new DestinationsModel({
   destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION)
 });
 
+const newEventButtonModel = new NewEventButtonModel();
 const filterModel = new FilterModel();
 const boardPresenter = new BoardPresenter({
   boardContainer: tripEventElement,
@@ -34,7 +34,7 @@ const boardPresenter = new BoardPresenter({
   pointsModel,
   offersModel,
   filterModel,
-  onNewPointDestroy: handleNewPointFormClose
+  newEventButtonModel
 });
 
 const generalTripManagementPresenter = new GeneralTripManagementPresenter({
@@ -42,33 +42,18 @@ const generalTripManagementPresenter = new GeneralTripManagementPresenter({
   filterModel,
   tripFilterElement,
   tripMainElement,
+  destinationsModel,
+  offersModel,
+  newEventButtonModel
 });
 
-const newEventButtonComponent = new NewEventButtonView({
-  onClick: handleNewEventButtonClick
-});
-
-function handleNewPointFormClose() {
-  newEventButtonComponent.element.disabled = false;
-}
-
-function handleNewEventButtonClick() {
-  boardPresenter.createPoint();
-  newEventButtonComponent.element.disabled = true;
-}
-
-offersModel.init()
-  .then(() => destinationsModel.init())
+Promise.all([offersModel.init(), destinationsModel.init()])
+  .then(() => pointsModel.init())
   .then(() => {
-    pointsModel.init().finally(() => {
-      render(newEventButtonComponent, tripMainElement);
-    });
+    generalTripManagementPresenter.init();
   })
   .catch(() => {
     showAlert('Can\'t loading data. Try again later.');
   });
 
-generalTripManagementPresenter.init();
 boardPresenter.init();
-
-

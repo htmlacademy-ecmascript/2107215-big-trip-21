@@ -1,5 +1,5 @@
 import ApiService from './framework/api-service.js';
-import { WebsiteAddress } from './const.js';
+import {WebsiteAddress} from './const.js';
 
 const Method = {
   GET: 'GET',
@@ -51,7 +51,7 @@ export default class PointsApiService extends ApiService {
 
   adaptToClient(point) {
     const adaptedPoint = {...point,
-      dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'], // На клиенте дата хранится как экземпляр Date
+      dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
       dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
       basePrice: point['base_price'],
       isFavorite: point['is_favorite']

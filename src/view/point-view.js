@@ -1,5 +1,5 @@
-import { DATE_FORMAT, POINT_EMPTY } from '../const.js';
-import { humanizeDate, dateDiff } from '../utils/utils.js';
+import {DATE_FORMAT, POINT_EMPTY} from '../const.js';
+import {humanizeDate, dateDiff} from '../utils/utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createViewOffersList = (offers) =>
@@ -16,8 +16,8 @@ const createViewOffersList = (offers) =>
     </ul>
   `;
 
-const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer }) => {
-  const { dateFrom, dateTo, type, basePrice, isFavorite } = point;
+const createPointTemplate = ({point = POINT_EMPTY, pointDestination, pointOffer}) => {
+  const {dateFrom, dateTo, type, basePrice, isFavorite} = point;
 
   const dateStart = humanizeDate(dateFrom, DATE_FORMAT.HOUR_MINUTE);
   const isDiffTime = dateDiff(dateFrom, dateTo);
@@ -28,8 +28,8 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
     ? 'event__favorite-btn event__favorite-btn--active'
     : 'event__favorite-btn';
 
-  return (
-    `<li class="trip-events__item">
+  return `
+    <li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="${dateFrom}">${dateMonth}</time>
         <div class="event__type">
@@ -59,8 +59,8 @@ const createPointTemplate = ({ point = POINT_EMPTY, pointDestination, pointOffer
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
-    </li>`
-  );
+    </li>
+  `;
 };
 
 export default class PointView extends AbstractView {
