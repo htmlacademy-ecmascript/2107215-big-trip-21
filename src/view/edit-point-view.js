@@ -14,7 +14,7 @@ const createOfferSelectorTemplate = (offers, point, isDisabled) =>
 
     return `
       <div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="${item.id}" type="checkbox" name="${item.id}" ${checked} ${disabled}>
+        <input class="event__offer-checkbox visually-hidden" id="${item.id}" type="checkbox" name="${item.id}" ${checked} data-offer-id="${item.id}" ${disabled}>
         <label class="event__offer-label" for="${item.id}">
         <span class="event__offer-title">${item.title}</span>
           &plus;&euro;&nbsp;
@@ -235,7 +235,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   constructor({point = POINT_EMPTY, pointDestinations, pointOffers, onFormSubmit, onCloseClick, onDeleteClick, onResetClick, isNew}) {
     super();
-    this._setState(EditPointView.parsePointToState(point));
+    this._setState(EditPointView.parsePointToState({point}));
     this.#pointDestinations = pointDestinations;
     this.#pointOffers = pointOffers;
     this.#isNew = isNew;
@@ -272,7 +272,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   reset(point) {
     this.updateElement(
-      EditPointView.parsePointToState(point),
+      EditPointView.parsePointToState({point}),
     );
   }
 
@@ -342,9 +342,9 @@ export default class EditPointView extends AbstractStatefulView {
   #offerChangeHandler = (evt) => {
     evt.preventDefault();
     const checkedBoxes = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
-    this._setState(
-      {offers: checkedBoxes.map((item) => item.id)}
-    );
+    this._setState({
+      offers: checkedBoxes.map((item) => item.dataset.offerId)
+    });
   };
 
   #inputDestinationChangeHandler = (evt) => {
@@ -417,7 +417,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.#datepickerFrom.set('maxDate', this._state.dateTo);
   };
 
-  static parsePointToState = (point) =>
+  static parsePointToState = ({point}) =>
     ({...point,
       isDisabled: false,
       isSaving: false,

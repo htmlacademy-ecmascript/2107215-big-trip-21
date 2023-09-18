@@ -5,9 +5,10 @@ export default class PointsModel extends Observable {
   #pointsApiService = null;
   #points = [];
 
-  constructor({ pointsApiService }) {
+  constructor({ pointsApiService, messagePresenter }) {
     super();
     this.#pointsApiService = pointsApiService;
+    this.messagePresenter = messagePresenter;
   }
 
   get points() {
@@ -18,11 +19,12 @@ export default class PointsModel extends Observable {
     try {
       const points = await this.#pointsApiService.points;
       this.#points = points.map(this.#pointsApiService.adaptToClient);
+      this._notify(UpdateType.INIT);
     } catch(err) {
       this.#points = [];
+      this.messagePresenter.destroyComponent();
+      this.messagePresenter.init(true);
     }
-
-    this._notify(UpdateType.INIT);
   }
 
   async updatePoint(updateType, update) {

@@ -8,16 +8,20 @@ import GeneralTripManagementPresenter from './presenter/general-trip-management-
 import PointsApiService from './points-api-service.js';
 import OffersApiService from './offers-api-service.js';
 import DestinationsApiService from './destinations-api-service.js';
+import MessagePresenter from './presenter/message-presenter.js';
 import {AUTHORIZATION, END_POINT} from './const.js';
-import {showAlert} from './utils/utils.js';
 
 const headerElement = document.querySelector('.page-header');
 const tripMainElement = headerElement.querySelector('.trip-main');
 const tripFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventElement = document.querySelector('.trip-events');
 
+const messagePresenter = new MessagePresenter({
+  boardContainer: tripEventElement
+});
 const pointsModel = new PointsModel({
-  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
+  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION),
+  messagePresenter
 });
 const offersModel = new OffersModel({
   offersApiService: new OffersApiService(END_POINT, AUTHORIZATION)
@@ -34,7 +38,8 @@ const boardPresenter = new BoardPresenter({
   pointsModel,
   offersModel,
   filterModel,
-  newEventButtonModel
+  newEventButtonModel,
+  messagePresenter
 });
 
 const generalTripManagementPresenter = new GeneralTripManagementPresenter({
@@ -53,7 +58,8 @@ Promise.all([offersModel.init(), destinationsModel.init()])
     generalTripManagementPresenter.init();
   })
   .catch(() => {
-    showAlert('Can\'t loading data. Try again later.');
+    messagePresenter.destroyComponent();
+    messagePresenter.init(true);
   });
 
 boardPresenter.init();

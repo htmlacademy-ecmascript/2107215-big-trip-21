@@ -1,9 +1,8 @@
-import {render, remove, RenderPosition} from '../framework/render';
+import {render, remove} from '../framework/render';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
-import LoadingView from '../view/loading-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import {sort} from '../utils/sort.js';
@@ -24,12 +23,12 @@ export default class BoardPresenter {
   #newEventButtonModel = null;
 
   #tripListComponent = new TripListView();
-  #loadingComponent = new LoadingView();
   #noPointComponent = null;
   #sortComponent = null;
 
   #pointPresenters = new Map();
   #newPointPresenter = null;
+  #messagePresenter = null;
 
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
@@ -40,13 +39,14 @@ export default class BoardPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({boardContainer, pointsModel, offersModel, destinationsModel, filterModel, newEventButtonModel}) {
+  constructor({boardContainer, pointsModel, offersModel, destinationsModel, filterModel, newEventButtonModel, messagePresenter}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#filterModel = filterModel;
     this.#newEventButtonModel = newEventButtonModel;
+    this.#messagePresenter = messagePresenter;
 
     this.#newPointPresenter = new NewPointPresenter({
       pointDestinations: destinationsModel,
@@ -87,7 +87,7 @@ export default class BoardPresenter {
 
   #renderBoard() {
     if (this.#isLoading) {
-      this.#renderLoading();
+      this.#messagePresenter.init();
       return;
     }
 
@@ -154,7 +154,7 @@ export default class BoardPresenter {
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
-        remove(this.#loadingComponent);
+        this.#messagePresenter.destroyComponent();
         this.#renderBoard();
         break;
     }
@@ -207,10 +207,6 @@ export default class BoardPresenter {
         this.#renderPoint(point);
       });
     }
-  }
-
-  #renderLoading() {
-    render(this.#loadingComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 
   #renderNoPointList() {
