@@ -53,7 +53,7 @@ export default class BoardPresenter {
       pointOffers: offersModel,
       pointListContainer: this.#tripListComponent,
       onDataChange: this.#handleViewAction,
-      onDestroy: this.#newPointDestroyHandler
+      onNewPointDestroy: this.#handlerNewPointDestroy
     });
     this.#newEventButtonModel.addObserver(this.#handleModelNewEventButton);
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -217,7 +217,7 @@ export default class BoardPresenter {
     render(this.#noPointComponent, this.#boardContainer);
   }
 
-  #newPointDestroyHandler = () => {
+  #handlerNewPointDestroy = () => {
     this.#isCreating = false;
     this.#newEventButtonModel.startCreating(false);
 

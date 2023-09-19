@@ -1,7 +1,7 @@
 import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeDate, createToUpperCase} from '../utils/utils.js';
-import {DATE_FORMAT, POINT_EMPTY, commonConfig, END_POINT} from '../const.js';
+import {DateFormat, POINT_EMPTY, commonConfig, END_POINT} from '../const.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
@@ -163,7 +163,7 @@ const createPointEditTemplate = ({point = POINT_EMPTY, pointDestinations, pointO
               id="event-start-time-1"
               type="text"
               name="event-start-time"
-              value="${he.encode(humanizeDate(dateFrom, DATE_FORMAT.FULL_DATA))}"
+              value="${he.encode(humanizeDate(dateFrom, DateFormat.FULL_DATA))}"
               data-date-from
               required
               ${isDisabled ? 'disabled' : ''}
@@ -175,7 +175,7 @@ const createPointEditTemplate = ({point = POINT_EMPTY, pointDestinations, pointO
               id="event-end-time-1"
               type="text"
               name="event-end-time"
-              value="${he.encode(humanizeDate(dateTo, DATE_FORMAT.FULL_DATA))}"
+              value="${he.encode(humanizeDate(dateTo, DateFormat.FULL_DATA))}"
               data-date-to
               required
               ${isDisabled ? 'disabled' : ''}
@@ -362,20 +362,16 @@ export default class EditPointView extends AbstractStatefulView {
 
   #inputPriceChangeHandler = (evt) => {
     evt.preventDefault();
-    const priceValue = evt.target.value;
+    let priceValue = Number(evt.target.value);
 
     if (priceValue < 0) {
-      this.updateElement({
-        basePrice: Math.abs(priceValue),
-      });
-      return;
+      priceValue = Math.abs(priceValue);
+      evt.target.value = priceValue;
     }
 
     if(!Number.isInteger(priceValue)) {
-      this.updateElement({
-        basePrice: Math.trunc(priceValue),
-      });
-      return;
+      priceValue = Math.trunc(priceValue);
+      evt.target.value = priceValue;
     }
 
     this._setState({

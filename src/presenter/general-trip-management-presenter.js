@@ -46,6 +46,11 @@ export default class GeneralTripManagementPresenter {
     this.#renderGeneralTripManagement();
   }
 
+  handleNewEventButtonClick = () => {
+    this.#newEventButtonModel.startCreating(true);
+    this.#newEventButtonComponent.element.disabled = true;
+  };
+
   #renderGeneralTripManagement() {
     this.#renderFilter();
     this.#renderNewEventButton();
@@ -63,11 +68,6 @@ export default class GeneralTripManagementPresenter {
     if (!creating) {
       this.#newEventButtonComponent.element.disabled = false;
     }
-  };
-
-  handleNewEventButtonClick = () => {
-    this.#newEventButtonModel.startCreating(true);
-    this.#newEventButtonComponent.element.disabled = true;
   };
 
   #renderFilter() {
@@ -93,12 +93,15 @@ export default class GeneralTripManagementPresenter {
   };
 
   #renderInfo() {
-    this.#infoComponent = new InfoView({
-      travelPoints: this.#getTravelPoints(),
-      isSmallPoints: this.#isSmallPoints,
-      userPrice: this.#getUserPrice()
-    });
-    render(this.#infoComponent, this.#tripMainElement, RenderPosition.AFTERBEGIN);
+    if (this.points.length) {
+      this.#infoComponent = new InfoView({
+        travelPoints: this.#getTravelPoints(),
+        isSmallPoints: this.#isSmallPoints,
+        userPrice: this.#getUserPrice()
+      });
+
+      render(this.#infoComponent, this.#tripMainElement, RenderPosition.AFTERBEGIN);
+    }
   }
 
   #getUserPrice () {
@@ -107,15 +110,13 @@ export default class GeneralTripManagementPresenter {
 
       const offers = [];
 
-      for (let i = 0; i <= this.points.length - 1; i++) {
-        if (this.points[i].offers.length) {
-          for(let j = 0; j <= this.points[i].offers.length - 1; j++) {
-            const typeOffer = this.#offersModel.getByType(this.points[i].type);
-            const itemOffer = typeOffer.offers.find((item) => item.id === this.points[i].offers[j]);
-            offers.push(itemOffer);
-          }
-        }
-      }
+      this.points.forEach((point) => {
+        point.offers.forEach((__, index) => {
+          const typeOffer = this.#offersModel.getByType(point.type);
+          const itemOffer = typeOffer.offers.find((item) => item.id === point.offers[index]);
+          offers.push(itemOffer);
+        });
+      });
 
       const userPrice = offers.reduce((acc, item) => acc + item.price, sum);
 
@@ -132,32 +133,31 @@ export default class GeneralTripManagementPresenter {
       destinations: destinations,
     };
 
-    for(let i = 0; i <= this.points.length - 1; i++) {
-      const currentPoint = this.points[i];
-      if (i === 0) {
-        const currentDestination = this.#destinationsModel.getById(currentPoint.destination);
-        points.push(currentPoint);
+    this.points.forEach((point, index, arr) => {
+      if (index === 0) {
+        const currentDestination = this.#destinationsModel.getById(point.destination);
+        points.push(point);
         destinations.push(currentDestination);
       }
 
-      if (this.points.length <= 3) {
+      if (arr.length <= 3) {
         this.#isSmallPoints = true;
       } else {
         this.#isSmallPoints = false;
       }
 
-      if (i === 1 && i !== this.points.length - 1) {
-        const currentDestination = this.#destinationsModel.getById(currentPoint.destination);
-        points.push(currentPoint);
+      if (index === 1 && index !== arr.length - 1) {
+        const currentDestination = this.#destinationsModel.getById(point.destination);
+        points.push(point);
         destinations.push(currentDestination);
       }
 
-      if (i === this.points.length - 1 && i !== 0) {
-        const currentDestination = this.#destinationsModel.getById(currentPoint.destination);
-        points.push(currentPoint);
+      if (index === arr.length - 1 && index !== 0) {
+        const currentDestination = this.#destinationsModel.getById(point.destination);
+        points.push(point);
         destinations.push(currentDestination);
       }
-    }
+    });
 
     return infoPoints;
   }

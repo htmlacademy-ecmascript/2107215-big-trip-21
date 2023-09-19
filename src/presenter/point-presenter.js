@@ -123,16 +123,16 @@ export default class PointPresenter {
   }
 
   #getOffers = () => {
-    const currentOffers = [];
+    const offers = [];
 
     if (this.#point.offers.length) {
-      for (let i = 0; i <= this.#point.offers.length - 1; i++) {
-        const itemOffer = this.#typeOffer.offers.find((item) => item.id === this.#point.offers[i]);
-        currentOffers.push(itemOffer);
-      }
+      this.#point.offers.forEach((currentOffer) => {
+        const itemOffer = this.#typeOffer.offers.find((item) => item.id === currentOffer);
+        offers.push(itemOffer);
+      });
     }
 
-    return currentOffers;
+    return offers;
   };
 
   #resetPoint() {

@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeDate} from '../utils/utils.js';
-import {DATE_FORMAT} from '../const.js';
+import {DateFormat} from '../const.js';
 
 const createInfoTemplate = (travelPoints, smallPoints, userPrice) => {
   const { destinations, points } = travelPoints;
@@ -34,18 +34,19 @@ const createInfoTemplate = (travelPoints, smallPoints, userPrice) => {
     }
 
     if (points.length === 1) {
-      const dateA = humanizeDate(points[0].dateFrom, DATE_FORMAT.MONTH_DAY);
-      const dateB = humanizeDate(points[0].dateTo, DATE_FORMAT.MONTH_DAY);
+      const dateA = humanizeDate(points[0].dateFrom, DateFormat.DAY_MONTH);
+      const dateB = humanizeDate(points[0].dateTo, DateFormat.DAY_MONTH);
 
       return `${dateA} &mdash; ${dateB}`;
     }
 
     const datesPoints = points.length ?
       points.map((item, index) => {
+
         if(index === points.length - 1) {
-          return `${humanizeDate(item.dateTo, DATE_FORMAT.MONTH_DAY)}`;
+          return `${humanizeDate(item.dateTo, DateFormat.DAY_MONTH)}`;
         }
-        return `${humanizeDate(item.dateFrom, DATE_FORMAT.MONTH_DAY)} &mdash; `;
+        return `${humanizeDate(item.dateFrom, DateFormat.DAY_MONTH)} &mdash; `;
       }).join('')
       : '';
 

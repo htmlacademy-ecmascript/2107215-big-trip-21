@@ -1,36 +1,39 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
 
-const ALERT_SHOW_TIME = 5000;
+const dateTime = {
+  MSEC_IN_SEC: 1000,
+  SEC_IN_MIN: 60,
+  MIN_IN_HOUR: 60,
+  HOUR_IN_DAY: 24
+};
+
+const MSEC_IN_HOUR = dateTime.MIN_IN_HOUR * dateTime.SEC_IN_MIN * dateTime.MSEC_IN_SEC;
+const MSEC_IN_DAY = dateTime.HOUR_IN_DAY * MSEC_IN_HOUR;
 
 const humanizeDate = (date, dataFormat) =>
   date ? dayjs(date).format(dataFormat) : '';
 
-const dateDiff = (date1, date2) => {
-  const fromTime = dayjs(date1);
-  const toTime = dayjs(date2);
-  const diffTime = toTime.diff(fromTime, 'minutes');
-  const timeDay = Math.floor(diffTime / 1440);
-  const answerH = diffTime - timeDay * 1440;
-  const timeHour = Math.floor(answerH / 60);
-  const timeMinute = answerH - timeHour * 60;
+function getPointDuration (dateFrom, dateTo) {
+  const timeDiff = dayjs(dateTo).diff(dayjs(dateFrom));
 
-  let answer = '';
+  let pointDuration = 0;
 
-  if (diffTime <= 0) {
-    return 'wrong date';
-  } else {
-    if (timeDay !== 0) {
-      answer = `${timeDay.toString().padStart(2, '0')}d `;
-    }
-    if (timeHour !== 0) {
-      answer += `${timeHour.toString().padStart(2, '0')}h ` ;
-    }
-    if (timeMinute !== 0) {
-      answer += `${timeMinute.toString().padStart(2, '0')}m` ;
-    }
-    return answer;
+  switch (true) {
+    case (timeDiff >= MSEC_IN_DAY):
+      pointDuration = dayjs.duration(timeDiff).format('DD[D] HH[H] mm[M]');
+      break;
+    case (timeDiff >= MSEC_IN_HOUR):
+      pointDuration = dayjs.duration(timeDiff).format('HH[H] mm[M]');
+      break;
+    case (timeDiff < MSEC_IN_HOUR):
+      pointDuration = dayjs.duration(timeDiff).format('mm[M]');
+      break;
   }
-};
+
+  return pointDuration;
+}
 
 const createToUpperCase = (word) =>
   word.charAt(0).toUpperCase() + word.slice(1);
@@ -54,27 +57,4 @@ const makeid = (length) => {
   return result;
 };
 
-const showAlert = (message) => {
-  const alertMessage = document.createElement('div');
-  alertMessage.style.zIndex = '9999';
-  alertMessage.style.left = 0;
-  alertMessage.style.top = 0;
-  alertMessage.style.position = 'fixed';
-  alertMessage.style.paddingTop = '28px';
-  alertMessage.style.paddingBottom = '28px';
-  alertMessage.style.width = '100%';
-  alertMessage.style.backgroundColor = 'white';
-  alertMessage.style.borderRadius = '2px';
-  alertMessage.style.border = '3px solid #fd8871';
-  alertMessage.style.fontSize = '30px';
-  alertMessage.style.textAlign = 'center';
-  alertMessage.textContent = message;
-  document.body.style.overflow = 'hidden';
-  document.body.append(alertMessage);
-
-  setTimeout(() => {
-    alertMessage.remove();
-  }, ALERT_SHOW_TIME);
-};
-
-export {humanizeDate, dateDiff, createToUpperCase, isDatasEqual, makeid, showAlert};
+export {humanizeDate, getPointDuration, createToUpperCase, isDatasEqual, makeid};
