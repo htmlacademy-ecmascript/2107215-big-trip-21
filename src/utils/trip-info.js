@@ -12,14 +12,14 @@ const getTripTtile = (points = [], destinations = []) => {
 const getTripDuration = (points = []) =>
   (points.length > 0) ? `${humanizeDate(points.at(0).dateFrom, DateFormat.DAY_MONTH)}&nbsp;&mdash;&nbsp;${humanizeDate(points.at(-1).dateTo, DateFormat.DAY_MONTH)}` : '';
 
-const getUserPrice = (points = [], offersPoint = []) => {
+const getUserPrice = (points = [], pointOffers = []) => {
   const sum = points.reduce((acc, item) => acc + item.basePrice, 0);
 
   const offers = [];
 
   points.forEach((point) => {
     point.offers.forEach((__, index) => {
-      const typeOffer = offersPoint.getByType(point.type);
+      const typeOffer = pointOffers.getByType(point.type);
       const itemOffer = typeOffer.offers.find((item) => item.id === point.offers[index]);
       offers.push(itemOffer);
     });
