@@ -91,7 +91,7 @@ export default class TripInfoPresenter {
   #renderInfo() {
     if (this.points.length) {
       this.#infoComponent = new InfoView({
-        tripTtile: getTripTtile(this.points, this.#destinationsModel),
+        tripTitle: getTripTtile(this.points, this.#destinationsModel),
         tripDuration: getTripDuration(this.points),
         userPrice: getUserPrice(this.points, this.#offersModel)
       });
