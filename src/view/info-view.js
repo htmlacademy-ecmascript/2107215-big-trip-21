@@ -33,19 +33,21 @@ const createInfoTemplate = (travelPoints, smallPoints, userPrice) => {
       points.splice(1, 1);
     }
 
-    if (points.length === 1) {
-      const dateA = humanizeDate(points[0].dateFrom, DateFormat.DAY_MONTH);
-      const dateB = humanizeDate(points[0].dateTo, DateFormat.DAY_MONTH);
-
-      return `${dateA} &mdash; ${dateB}`;
-    }
-
     const datesPoints = points.length ?
       points.map((item, index) => {
+        if(points.length === 1) {
+          return (() => {
+            const dateA = humanizeDate(points[0].dateFrom, DateFormat.DAY_MONTH);
+            const dateB = humanizeDate(points[0].dateTo, DateFormat.DAY_MONTH);
+
+            return `${dateA} &mdash; ${dateB}`;
+          })();
+        }
 
         if(index === points.length - 1) {
           return `${humanizeDate(item.dateTo, DateFormat.DAY_MONTH)}`;
         }
+
         return `${humanizeDate(item.dateFrom, DateFormat.DAY_MONTH)} &mdash; `;
       }).join('')
       : '';
@@ -62,7 +64,7 @@ const createInfoTemplate = (travelPoints, smallPoints, userPrice) => {
       ${userPrice ?
     `<p class="trip-info__cost">
         Total: &euro;&nbsp;
-        <span class="trip-info__cost-value"> ${userPrice}</span>
+        <span class="trip-info__cost-value">${userPrice}</span>
       </p>`
     : ''}
     </section>

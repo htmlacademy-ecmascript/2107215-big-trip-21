@@ -153,14 +153,6 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#resetPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  };
-
   #handleFormSubmit = (update) => {
     const isMinorUpdate =
       !isDatasEqual(this.#point.dateFrom, update.dateFrom) ||
@@ -199,5 +191,13 @@ export default class PointPresenter {
         ...this.#point,
         isFavorite: !this.#point.isFavorite
       });
+  };
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#resetPoint();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
   };
 }

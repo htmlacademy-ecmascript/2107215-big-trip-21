@@ -81,15 +81,12 @@ export default class GeneralTripManagementPresenter {
   }
 
   #handleModelEvent = (updateType) => {
-    switch (updateType) {
-      case UpdateType.INIT:
-        this.#renderInfo();
-        break;
-      default:
-        remove(this.#infoComponent);
-        this.#renderInfo();
-        break;
+    if (updateType === UpdateType.INIT) {
+      this.#renderInfo();
     }
+
+    remove(this.#infoComponent);
+    this.#renderInfo();
   };
 
   #renderInfo() {
@@ -128,7 +125,7 @@ export default class GeneralTripManagementPresenter {
     const points = [];
     const destinations = [];
 
-    const infoPoints = {
+    const travelInfo = {
       points: points,
       destinations: destinations,
     };
@@ -159,7 +156,7 @@ export default class GeneralTripManagementPresenter {
       }
     });
 
-    return infoPoints;
+    return travelInfo;
   }
 }
 
