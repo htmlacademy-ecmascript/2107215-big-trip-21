@@ -192,7 +192,7 @@ const createPointEditTemplate = ({point = POINT_EMPTY, pointDestinations, pointO
               type="number"
               id="event-price-1"
               name="event-price"
-              value="${basePrice}"
+              value="${he.encode(String(basePrice))}"
               min="1"
               autocomplete="off"
               required

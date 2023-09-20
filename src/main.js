@@ -4,10 +4,8 @@ import OffersModel from './model/offers-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import FilterModel from './model/filter-model.js';
 import NewEventButtonModel from './model/new-event-button-model.js';
-import GeneralTripManagementPresenter from './presenter/general-trip-management-presenter.js';
+import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import PointsApiService from './points-api-service.js';
-import OffersApiService from './offers-api-service.js';
-import DestinationsApiService from './destinations-api-service.js';
 import MessagePresenter from './presenter/message-presenter.js';
 import {AUTHORIZATION, END_POINT} from './const.js';
 
@@ -16,18 +14,24 @@ const tripMainElement = headerElement.querySelector('.trip-main');
 const tripFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventElement = document.querySelector('.trip-events');
 
+const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
+
 const messagePresenter = new MessagePresenter({
   boardContainer: tripEventElement
 });
-const pointsModel = new PointsModel({
-  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION),
-  messagePresenter
-});
+
 const offersModel = new OffersModel({
-  offersApiService: new OffersApiService(END_POINT, AUTHORIZATION)
+  service: pointsApiService
 });
 const destinationsModel = new DestinationsModel({
-  destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION)
+  service: pointsApiService
+});
+const pointsModel = new PointsModel({
+  service: pointsApiService,
+  messagePresenter,
+  tripInfoPresenter: getTripInfoPresenter,
+  destinationsModel,
+  offersModel
 });
 
 const newEventButtonModel = new NewEventButtonModel();
@@ -42,24 +46,19 @@ const boardPresenter = new BoardPresenter({
   messagePresenter
 });
 
-const generalTripManagementPresenter = new GeneralTripManagementPresenter({
-  pointsModel,
-  filterModel,
-  tripFilterElement,
-  tripMainElement,
-  destinationsModel,
-  offersModel,
-  newEventButtonModel
-});
-
-Promise.all([offersModel.init(), destinationsModel.init()])
-  .then(() => pointsModel.init())
-  .then(() => {
-    generalTripManagementPresenter.init();
-  })
-  .catch(() => {
-    messagePresenter.destroyComponent();
-    messagePresenter.init(true);
+function getTripInfoPresenter () {
+  const tripInfoPresenter = new TripInfoPresenter({
+    pointsModel,
+    filterModel,
+    tripFilterElement,
+    tripMainElement,
+    destinationsModel,
+    offersModel,
+    newEventButtonModel
   });
 
+  tripInfoPresenter.init();
+}
+
+pointsModel.init();
 boardPresenter.init();

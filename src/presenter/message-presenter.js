@@ -11,7 +11,7 @@ export default class MessagePresenter {
   }
 
   init(errorMessage) {
-    this.#errorMessage = errorMessage;
+    this.#errorMessage = errorMessage.isError;
     this.#messageComponent = new MessageView({
       isErrorMessage: this.#errorMessage
     });

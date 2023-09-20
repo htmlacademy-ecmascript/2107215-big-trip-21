@@ -5,8 +5,9 @@ import NewEventButtonView from '../view/new-event-button-view.js';
 import {UpdateType} from '../const.js';
 import {SortType} from '../const.js';
 import {sort} from '../utils/sort.js';
+import {getTripTtile, getTripDuration, getUserPrice} from '../utils/trip-info.js';
 
-export default class GeneralTripManagementPresenter {
+export default class TripInfoPresenter {
   #pointsModel = null;
   #filterModel = null;
   #destinationsModel = null;
@@ -18,8 +19,6 @@ export default class GeneralTripManagementPresenter {
 
   #tripMainElement = null;
   #tripFilterElement = null;
-
-  #isSmallPoints = false;
 
   constructor({pointsModel, filterModel, tripFilterElement, tripMainElement, destinationsModel, offersModel, newEventButtonModel}) {
     this.#pointsModel = pointsModel;
@@ -42,8 +41,8 @@ export default class GeneralTripManagementPresenter {
     return sortedPoints;
   }
 
-  init() {
-    this.#renderGeneralTripManagement();
+  async init() {
+    this.#renderTripInfoPresenter();
   }
 
   handleNewEventButtonClick = () => {
@@ -51,7 +50,7 @@ export default class GeneralTripManagementPresenter {
     this.#newEventButtonComponent.element.disabled = true;
   };
 
-  #renderGeneralTripManagement() {
+  #renderTripInfoPresenter() {
     this.#renderFilter();
     this.#renderNewEventButton();
   }
@@ -92,71 +91,13 @@ export default class GeneralTripManagementPresenter {
   #renderInfo() {
     if (this.points.length) {
       this.#infoComponent = new InfoView({
-        travelPoints: this.#getTravelPoints(),
-        isSmallPoints: this.#isSmallPoints,
-        userPrice: this.#getUserPrice()
+        tripTtile: getTripTtile(this.points, this.#destinationsModel),
+        tripDuration: getTripDuration(this.points),
+        userPrice: getUserPrice(this.points, this.#offersModel)
       });
 
       render(this.#infoComponent, this.#tripMainElement, RenderPosition.AFTERBEGIN);
     }
-  }
-
-  #getUserPrice () {
-    if (this.points.length) {
-      const sum = this.points.reduce((acc, item) => acc + item.basePrice, 0);
-
-      const offers = [];
-
-      this.points.forEach((point) => {
-        point.offers.forEach((__, index) => {
-          const typeOffer = this.#offersModel.getByType(point.type);
-          const itemOffer = typeOffer.offers.find((item) => item.id === point.offers[index]);
-          offers.push(itemOffer);
-        });
-      });
-
-      const userPrice = offers.reduce((acc, item) => acc + item.price, sum);
-
-      return userPrice;
-    }
-  }
-
-  #getTravelPoints () {
-    const points = [];
-    const destinations = [];
-
-    const travelInfo = {
-      points: points,
-      destinations: destinations,
-    };
-
-    this.points.forEach((point, index, arr) => {
-      if (index === 0) {
-        const currentDestination = this.#destinationsModel.getById(point.destination);
-        points.push(point);
-        destinations.push(currentDestination);
-      }
-
-      if (arr.length <= 3) {
-        this.#isSmallPoints = true;
-      } else {
-        this.#isSmallPoints = false;
-      }
-
-      if (index === 1 && index !== arr.length - 1) {
-        const currentDestination = this.#destinationsModel.getById(point.destination);
-        points.push(point);
-        destinations.push(currentDestination);
-      }
-
-      if (index === arr.length - 1 && index !== 0) {
-        const currentDestination = this.#destinationsModel.getById(point.destination);
-        points.push(point);
-        destinations.push(currentDestination);
-      }
-    });
-
-    return travelInfo;
   }
 }
 

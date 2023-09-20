@@ -87,7 +87,7 @@ export default class BoardPresenter {
 
   #renderBoard() {
     if (this.#isLoading) {
-      this.#messagePresenter.init();
+      this.#messagePresenter.init({isError: false});
       return;
     }
 
