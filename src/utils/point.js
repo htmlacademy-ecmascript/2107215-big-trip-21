@@ -30,7 +30,4 @@ const adaptToServer = (point) => {
   return adaptedPoint;
 };
 
-export {
-  adaptToClient,
-  adaptToServer
-};
+export {adaptToClient, adaptToServer};

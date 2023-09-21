@@ -41,7 +41,7 @@ export default class TripInfoPresenter {
     return sortedPoints;
   }
 
-  async init() {
+  init() {
     this.#renderTripInfoPresenter();
   }
 
