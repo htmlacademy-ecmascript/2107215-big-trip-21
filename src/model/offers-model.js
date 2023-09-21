@@ -1,9 +1,9 @@
 export default class OffersModel {
-  #offersApiService = null;
+  #service = null;
   #offers = [];
 
-  constructor({ offersApiService }) {
-    this.#offersApiService = offersApiService;
+  constructor({service}) {
+    this.#service = service;
   }
 
   get offers() {
@@ -11,13 +11,8 @@ export default class OffersModel {
   }
 
   async init() {
-    try {
-      const offers = await this.#offersApiService.offers;
-      this.#offers = offers;
-    } catch(err) {
-      this.#offers = [];
-      throw new Error('Can\'t loading offers');
-    }
+    this.#offers = await this.#service.offers;
+    return this.#offers;
   }
 
   getByType(type) {

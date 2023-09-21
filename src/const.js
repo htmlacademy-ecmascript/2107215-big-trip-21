@@ -1,13 +1,7 @@
-import {makeid} from './utils/utils.js';
+import {makeId} from './utils/utils.js';
 
 const END_POINT = 'https://21.objects.pages.academy/big-trip';
-const AUTHORIZATION = `Basic ${makeid(16)}`;
-
-const DATE_FORMAT = {
-  FULL_DATA: 'DD/MM/YY HH:mm',
-  HOUR_MINUTE: 'HH:mm',
-  MONTH_DAY: 'MMM DD',
-};
+const AUTHORIZATION = `Basic ${makeId(16)}`;
 
 const DEFAULT_TYPE = 'flight';
 
@@ -19,6 +13,14 @@ const POINT_EMPTY = {
   isFavorite: false,
   offers: [],
   type: DEFAULT_TYPE,
+};
+
+const DateFormat = {
+  FULL_DATA: 'DD/MM/YY HH:mm',
+  HOUR_MINUTE: 'HH:mm',
+  MONTH_DAY: 'MMM DD',
+  DAY_MONTH: 'DD MMM',
+  DATE_TIME: 'YYYY-MM-DDTHH:mm'
 };
 
 const FilterType = {
@@ -76,7 +78,7 @@ const commonConfig = {
 export {
   END_POINT,
   AUTHORIZATION,
-  DATE_FORMAT,
+  DateFormat,
   DEFAULT_TYPE,
   POINT_EMPTY,
   FilterType,

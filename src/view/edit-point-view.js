@@ -1,7 +1,7 @@
 import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeDate, createToUpperCase} from '../utils/utils.js';
-import {DATE_FORMAT, POINT_EMPTY, commonConfig, END_POINT} from '../const.js';
+import {DateFormat, POINT_EMPTY, commonConfig, END_POINT} from '../const.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
@@ -14,7 +14,7 @@ const createOfferSelectorTemplate = (offers, point, isDisabled) =>
 
     return `
       <div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="${item.id}" type="checkbox" name="${item.id}" ${checked} ${disabled}>
+        <input class="event__offer-checkbox visually-hidden" id="${item.id}" type="checkbox" name="${item.id}" ${checked} data-offer-id="${item.id}" ${disabled}>
         <label class="event__offer-label" for="${item.id}">
         <span class="event__offer-title">${item.title}</span>
           &plus;&euro;&nbsp;
@@ -163,7 +163,7 @@ const createPointEditTemplate = ({point = POINT_EMPTY, pointDestinations, pointO
               id="event-start-time-1"
               type="text"
               name="event-start-time"
-              value="${he.encode(humanizeDate(dateFrom, DATE_FORMAT.FULL_DATA))}"
+              value="${he.encode(humanizeDate(dateFrom, DateFormat.FULL_DATA))}"
               data-date-from
               required
               ${isDisabled ? 'disabled' : ''}
@@ -175,7 +175,7 @@ const createPointEditTemplate = ({point = POINT_EMPTY, pointDestinations, pointO
               id="event-end-time-1"
               type="text"
               name="event-end-time"
-              value="${he.encode(humanizeDate(dateTo, DATE_FORMAT.FULL_DATA))}"
+              value="${he.encode(humanizeDate(dateTo, DateFormat.FULL_DATA))}"
               data-date-to
               required
               ${isDisabled ? 'disabled' : ''}
@@ -192,7 +192,7 @@ const createPointEditTemplate = ({point = POINT_EMPTY, pointDestinations, pointO
               type="number"
               id="event-price-1"
               name="event-price"
-              value="${basePrice}"
+              value="${he.encode(String(basePrice))}"
               min="1"
               autocomplete="off"
               required
@@ -235,7 +235,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   constructor({point = POINT_EMPTY, pointDestinations, pointOffers, onFormSubmit, onCloseClick, onDeleteClick, onResetClick, isNew}) {
     super();
-    this._setState(EditPointView.parsePointToState(point));
+    this._setState(EditPointView.parsePointToState({point}));
     this.#pointDestinations = pointDestinations;
     this.#pointOffers = pointOffers;
     this.#isNew = isNew;
@@ -272,7 +272,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   reset(point) {
     this.updateElement(
-      EditPointView.parsePointToState(point),
+      EditPointView.parsePointToState({point}),
     );
   }
 
@@ -342,9 +342,9 @@ export default class EditPointView extends AbstractStatefulView {
   #offerChangeHandler = (evt) => {
     evt.preventDefault();
     const checkedBoxes = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
-    this._setState(
-      {offers: checkedBoxes.map((item) => item.id)}
-    );
+    this._setState({
+      offers: checkedBoxes.map((item) => item.dataset.offerId)
+    });
   };
 
   #inputDestinationChangeHandler = (evt) => {
@@ -362,20 +362,16 @@ export default class EditPointView extends AbstractStatefulView {
 
   #inputPriceChangeHandler = (evt) => {
     evt.preventDefault();
-    const priceValue = evt.target.value;
+    let priceValue = Number(evt.target.value);
 
     if (priceValue < 0) {
-      this.updateElement({
-        basePrice: Math.abs(priceValue),
-      });
-      return;
+      priceValue = Math.abs(priceValue);
+      evt.target.value = priceValue;
     }
 
     if(!Number.isInteger(priceValue)) {
-      this.updateElement({
-        basePrice: Math.trunc(priceValue),
-      });
-      return;
+      priceValue = Math.trunc(priceValue);
+      evt.target.value = priceValue;
     }
 
     this._setState({
@@ -417,7 +413,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.#datepickerFrom.set('maxDate', this._state.dateTo);
   };
 
-  static parsePointToState = (point) =>
+  static parsePointToState = ({point}) =>
     ({...point,
       isDisabled: false,
       isSaving: false,

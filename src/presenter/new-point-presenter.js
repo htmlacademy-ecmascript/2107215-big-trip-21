@@ -8,16 +8,16 @@ export default class NewPointPresenter {
 
   #pointListContainer = null;
   #handleDataChange = null;
-  #handleDestroy = null;
+  #handleNewPointDestroy = null;
 
   #editPointComponent = null;
 
-  constructor({pointDestinations, pointOffers, pointListContainer, onDataChange, onDestroy}) {
+  constructor({pointDestinations, pointOffers, pointListContainer, onDataChange, onNewPointDestroy}) {
     this.#pointDestinations = pointDestinations;
     this.#pointOffers = pointOffers;
     this.#pointListContainer = pointListContainer;
     this.#handleDataChange = onDataChange;
-    this.#handleDestroy = onDestroy;
+    this.#handleNewPointDestroy = onNewPointDestroy;
   }
 
   init() {
@@ -47,7 +47,7 @@ export default class NewPointPresenter {
     this.#editPointComponent = null;
     document.removeEventListener('keydown', this.#escKeyDownHandler);
 
-    this.#handleDestroy();
+    this.#handleNewPointDestroy();
   };
 
   setSaving() {
