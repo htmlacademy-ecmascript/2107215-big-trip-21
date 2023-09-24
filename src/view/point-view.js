@@ -16,7 +16,7 @@ const createViewOffersList = (offers) =>
     </ul>
   `;
 
-const createPointTemplate = ({point = POINT_EMPTY, pointDestination, pointOffer}) => {
+const createPointTemplate = ({point = POINT_EMPTY, pointDestination, pointOffers}) => {
   const {dateFrom, dateTo, type, basePrice, isFavorite} = point;
 
   const dateStart = humanizeDate(dateFrom, DateFormat.HOUR_MINUTE);
@@ -47,7 +47,7 @@ const createPointTemplate = ({point = POINT_EMPTY, pointDestination, pointOffer}
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-          ${createViewOffersList(pointOffer)}
+          ${createViewOffersList(pointOffers)}
         <button class="${favoriteClassName}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -65,15 +65,15 @@ const createPointTemplate = ({point = POINT_EMPTY, pointDestination, pointOffer}
 export default class PointView extends AbstractView {
   #point = null;
   #pointDestination = null;
-  #pointOffer = [];
+  #pointOffers = [];
   #handleOpenClick = null;
   #handleFavoriteClick = null;
 
-  constructor({point = POINT_EMPTY, pointDestination, pointOffer, onOpenClick, onFavoriteClick}) {
+  constructor({point = POINT_EMPTY, pointDestination, pointOffers, onOpenClick, onFavoriteClick}) {
     super();
     this.#point = point;
     this.#pointDestination = pointDestination;
-    this.#pointOffer = pointOffer;
+    this.#pointOffers = pointOffers;
     this.#handleOpenClick = onOpenClick;
     this.#handleFavoriteClick = onFavoriteClick;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#openClickHandler);
@@ -84,7 +84,7 @@ export default class PointView extends AbstractView {
     return createPointTemplate({
       point: this.#point,
       pointDestination: this.#pointDestination,
-      pointOffer: this.#pointOffer
+      pointOffers: this.#pointOffers
     });
   }
 

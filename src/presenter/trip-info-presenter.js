@@ -45,11 +45,6 @@ export default class TripInfoPresenter {
     this.#renderTripInfoPresenter();
   }
 
-  handleNewEventButtonClick = () => {
-    this.#newEventButtonModel.startCreating(true);
-    this.#newEventButtonComponent.element.disabled = true;
-  };
-
   #renderTripInfoPresenter() {
     this.#renderFilter();
     this.#renderNewEventButton();
@@ -57,17 +52,11 @@ export default class TripInfoPresenter {
 
   #renderNewEventButton() {
     this.#newEventButtonComponent = new NewEventButtonView({
-      onButtonClick: this.handleNewEventButtonClick,
+      onButtonClick: this.#handleNewEventButtonClick,
     });
 
     render(this.#newEventButtonComponent, this.#tripMainElement);
   }
-
-  #handleModelNewEventButton = (creating) => {
-    if (!creating) {
-      this.#newEventButtonComponent.element.disabled = false;
-    }
-  };
 
   #renderFilter() {
     const filterPresenter = new FilterPresenter({
@@ -78,15 +67,6 @@ export default class TripInfoPresenter {
 
     filterPresenter.init();
   }
-
-  #handleModelEvent = (updateType) => {
-    if (updateType === UpdateType.INIT) {
-      this.#renderInfo();
-    }
-
-    remove(this.#infoComponent);
-    this.#renderInfo();
-  };
 
   #renderInfo() {
     if (this.points.length) {
@@ -99,5 +79,25 @@ export default class TripInfoPresenter {
       render(this.#infoComponent, this.#tripMainElement, RenderPosition.AFTERBEGIN);
     }
   }
+
+  #handleModelEvent = (updateType) => {
+    if (updateType === UpdateType.INIT) {
+      this.#renderInfo();
+    }
+
+    remove(this.#infoComponent);
+    this.#renderInfo();
+  };
+
+  #handleModelNewEventButton = (creating) => {
+    if (!creating) {
+      this.#newEventButtonComponent.element.disabled = false;
+    }
+  };
+
+  #handleNewEventButtonClick = () => {
+    this.#newEventButtonModel.startCreating(true);
+    this.#newEventButtonComponent.element.disabled = true;
+  };
 }
 

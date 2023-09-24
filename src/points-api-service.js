@@ -3,7 +3,6 @@ import {WebsiteAddress} from './const.js';
 import {adaptToServer} from './utils/point.js';
 
 const Method = {
-  GET: 'GET',
   PUT: 'PUT',
   POST: 'POST',
   DELETE: 'DELETE'
