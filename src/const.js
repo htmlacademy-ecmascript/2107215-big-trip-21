@@ -72,7 +72,8 @@ const commonConfig = {
   locale: {
     firstDayOfWeek: 1,
   },
-  'time_24hr': true
+  'time_24hr': true,
+  allowInput: true
 };
 
 export {
