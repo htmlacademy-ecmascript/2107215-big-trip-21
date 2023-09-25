@@ -5,15 +5,15 @@ import {adaptToClient} from '../utils/point.js';
 export default class PointsModel extends Observable {
   #service = null;
   #points = [];
-  #infoPresenter = null;
+  #handleTripInfoPresenterActivate = null;
   #destinationsModel = null;
   #offersModel = null;
 
-  constructor({service, messagePresenter, tripInfoPresenter, destinationsModel, offersModel}) {
+  constructor({service, messagePresenter, onTripInfoPresenterActivate, destinationsModel, offersModel}) {
     super();
     this.#service = service;
     this.messagePresenter = messagePresenter;
-    this.#infoPresenter = tripInfoPresenter;
+    this.#handleTripInfoPresenterActivate = onTripInfoPresenterActivate;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
   }
@@ -27,7 +27,7 @@ export default class PointsModel extends Observable {
       await Promise.all([this.#destinationsModel.init(), this.#offersModel.init()]);
       const points = await this.#service.points;
       this.#points = points.map(adaptToClient);
-      this.#infoPresenter();
+      this.#handleTripInfoPresenterActivate();
       this._notify(UpdateType.INIT);
     } catch(err) {
       this.#points = [];
