@@ -1,7 +1,7 @@
 import {humanizeDate} from './utils.js';
 import {DateFormat} from '../const.js';
 
-const getTripTtile = (points = [], destinations = []) => {
+const getTripTitle = (points = [], destinations = []) => {
   const destinationNames = points.map((point) => destinations.getById(point.destination).name);
 
   return (destinationNames.length <= 3)
@@ -30,4 +30,4 @@ const getUserPrice = (points = [], pointOffers = []) => {
   return userPrice;
 };
 
-export {getTripTtile, getTripDuration, getUserPrice};
+export {getTripTitle, getTripDuration, getUserPrice};
