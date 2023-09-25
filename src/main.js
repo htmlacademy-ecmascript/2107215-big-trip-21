@@ -29,7 +29,7 @@ const destinationsModel = new DestinationsModel({
 const pointsModel = new PointsModel({
   service: pointsApiService,
   messagePresenter,
-  tripInfoPresenter: getTripInfoPresenter,
+  onTripInfoPresenterActivate: handleTripInfoPresenterActivate,
   destinationsModel,
   offersModel
 });
@@ -46,7 +46,10 @@ const boardPresenter = new BoardPresenter({
   messagePresenter
 });
 
-function getTripInfoPresenter () {
+pointsModel.init();
+boardPresenter.init();
+
+function handleTripInfoPresenterActivate () {
   const tripInfoPresenter = new TripInfoPresenter({
     pointsModel,
     filterModel,
@@ -59,6 +62,3 @@ function getTripInfoPresenter () {
 
   tripInfoPresenter.init();
 }
-
-pointsModel.init();
-boardPresenter.init();
