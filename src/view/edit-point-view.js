@@ -315,8 +315,7 @@ export default class EditPointView extends AbstractStatefulView {
         ...commonConfig,
         defaultDate: this._state.dateFrom,
         onClose: this.#dateFromCloseHandler,
-        maxDate: this._state.dateTo,
-        allowInput: true
+        maxDate: this._state.dateTo
       },
     );
 
@@ -326,8 +325,7 @@ export default class EditPointView extends AbstractStatefulView {
         ...commonConfig,
         defaultDate: this._state.dateTo,
         onClose: this.#dateToCloseHandler,
-        minDate: this._state.dateFrom,
-        allowInput: true
+        minDate: this._state.dateFrom
       });
   }
 
