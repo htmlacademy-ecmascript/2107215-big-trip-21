@@ -5,7 +5,7 @@ import NewEventButtonView from '../view/new-event-button-view.js';
 import {UpdateType} from '../const.js';
 import {SortType} from '../const.js';
 import {sort} from '../utils/sort.js';
-import {getTripTtile, getTripDuration, getUserPrice} from '../utils/trip-info.js';
+import {getTripTitle, getTripDuration, getUserPrice} from '../utils/trip-info.js';
 
 export default class TripInfoPresenter {
   #pointsModel = null;
@@ -71,7 +71,7 @@ export default class TripInfoPresenter {
   #renderInfo() {
     if (this.points.length) {
       this.#infoComponent = new InfoView({
-        tripTitle: getTripTtile(this.points, this.#destinationsModel),
+        tripTitle: getTripTitle(this.points, this.#destinationsModel),
         tripDuration: getTripDuration(this.points),
         userPrice: getUserPrice(this.points, this.#offersModel)
       });
